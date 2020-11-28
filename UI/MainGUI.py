@@ -49,8 +49,8 @@ class App(QMainWindow):
         self.lastPoint = QPoint()
 
         # cursor setting
-        self.editCursor = QCursor(QPixmap("../assets/icons/cursor/icons8-edit-24.png"))
-        self.eraseCursor = QCursor(QPixmap("../assets/icons/cursor/icons8-erase-28.png"))
+        self.editCursor = QCursor(QPixmap("./assets/icons/cursor/icons8-edit-24.png"))
+        self.eraseCursor = QCursor(QPixmap("./assets/icons/cursor/icons8-erase-28.png"))
 
         # 1. components of the UI
         self.createUIComponents()
@@ -107,39 +107,39 @@ class App(QMainWindow):
         self.rectangleButton = self.editMenuBar.addAction("Select")
 
         # Pencil tool
-        self.pencilButton.setIcon(QIcon("../assets/icons/icons8-pencil-50.png"))
+        self.pencilButton.setIcon(QIcon("./assets/icons/icons8-pencil-50.png"))
         self.pencilButton.triggered.connect(self.drawUsingPencil)
 
         # rectangle tool
-        self.rectangleButton.setIcon(QIcon("../assets/icons/icons8-rectangle-50.png"))
+        self.rectangleButton.setIcon(QIcon("./assets/icons/icons8-rectangle-50.png"))
 
         # Erase tool
         self.eraseButton.setShortcut("Ctrl+X")
-        self.eraseButton.setIcon(QIcon("../assets/icons/icons8-eraser.png"))
+        self.eraseButton.setIcon(QIcon("./assets/icons/icons8-eraser.png"))
         self.eraseButton.triggered.connect(self.eraseDrawing)
 
         # lasso tool
         self.lassoButton.setShortcut("Ctrl+L")
-        self.lassoButton.setIcon(QIcon("../assets/icons/icons8-lasso-tool-48.png"))
+        self.lassoButton.setIcon(QIcon("./assets/icons/icons8-lasso-tool-48.png"))
 
         # Stop Video button
         self.stopVideoButton.setShortcut('Ctrl+P')
-        self.stopVideoButton.setIcon(QIcon("../assets/icons/icons8-stop-squared-50.png"))
+        self.stopVideoButton.setIcon(QIcon("./assets/icons/icons8-stop-squared-50.png"))
         self.stopVideoButton.triggered.connect(self.pauseDrawing)
 
         # start button
         self.startVideoButton.setShortcut('Ctrl+S')
-        self.startVideoButton.setIcon(QIcon("../assets/icons/icons8-start-50.png"))
+        self.startVideoButton.setIcon(QIcon("./assets/icons/icons8-start-50.png"))
         self.startVideoButton.triggered.connect(self.startVideo)
 
         # create menu bar to put some menu Options
         self.actionOpen.setShortcut('Ctrl+O')
-        self.actionOpen.setIcon(QIcon("../assets/icons/open_file_icon.png"))
+        self.actionOpen.setIcon(QIcon("./assets/icons/open_file_icon.png"))
         self.actionOpen.triggered.connect(self.openFileNamesDialog)
 
         # add exit option to exit the program(keyboard shortcut ctrl+q)
         self.actionExit.setShortcut('Ctrl+Q')
-        self.actionExit.setIcon(QIcon("../assets/icons/icons8-exit-50.png"))
+        self.actionExit.setIcon(QIcon("./assets/icons/icons8-exit-50.png"))
         self.actionExit.triggered.connect(self.exitApp)
 
     def finalUi(self):
