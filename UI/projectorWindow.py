@@ -19,5 +19,3 @@ class ProjectorWindow(QWidget):
         self.setStyleSheet("background:transparent;")
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.showMaximized()
-
-
