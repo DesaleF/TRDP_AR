@@ -55,6 +55,7 @@ class App(QMainWindow):
         # 1. components of the UI
         self.createUIComponents()
         # 2. menu bar for file
+
         self.createMenu()
         # 3. Build UI
         self.buildUI()
