@@ -15,11 +15,12 @@ class ProjectorWindow(QWidget):
         super().__init__()
         layout = QVBoxLayout()
         self.label = QLabel("Secondary Window")
-        self.label.setStyleSheet("margin:0px;background:transparent;border: 5px solid green;")
+        self.label.setStyleSheet("margin:0px;background:transparent;border: 5px solid red;")
 
         # create transparent layout
         layout.addWidget(self.label)
         self.setLayout(layout)
+        # self.setStyleSheet("background:transparent;")
         self.setAttribute(Qt.WA_TranslucentBackground)
 
         # show the window on the second screen
@@ -29,10 +30,11 @@ class ProjectorWindow(QWidget):
         self.showMaximized()
         self.setWindowFlags(Qt.FramelessWindowHint)
 
+        # to get the screen size
         for displayNr in range(QDesktopWidget().screenCount()):
             self.screen = QDesktopWidget().screenGeometry(displayNr)
         self.secHeight = self.screen.height()-50
-        self.secWidth = self.screen.width()-30
+        self.secWidth = self.screen.width()-50
 
 
 

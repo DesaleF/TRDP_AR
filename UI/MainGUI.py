@@ -1,5 +1,6 @@
 import sys
 import cv2
+import numpy as np
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import QTimer, Qt, QPoint, QRect, QSize
 from PyQt5.QtGui import QPixmap, QImage, QIcon, QPainter, QPen, QCursor
@@ -10,7 +11,6 @@ from UI.projectorWindow import ProjectorWindow
 
 
 class App(QMainWindow):
-
     def __init__(self):
         super(App, self).__init__()
 
@@ -18,6 +18,7 @@ class App(QMainWindow):
         self.title = 'PROJECTION AR'
         self.left = 300
         self.top = 100
+        self.camera = 2
 
         # offsets
         self.pointerOffsetX = 123
@@ -79,32 +80,33 @@ class App(QMainWindow):
         # self.setGeometry(self.left, self.top, self.width(), self.height())
         self.setWindowIcon(QIcon("./assets/icons/icon-green.png"))
         self.showMaximized()
+        sideButtonSize = QtCore.QSize(85, 55)
 
         # side Button process
         self.sideStartButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
         self.sideStartButton.setIcon(QIcon('./assets/icons/SideButton/sidePlayIcon.png'))
         self.sideStartButton.released.connect(self.startVideo)
-        self.sideStartButton.setIconSize(QtCore.QSize(60, 40))
+        self.sideStartButton.setIconSize(sideButtonSize)
 
         self.sideDrawButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
         self.sideDrawButton.setIcon(QIcon('./assets/icons/SideButton/sideEditIcon.png'))
         self.sideDrawButton.released.connect(self.drawUsingPencil)
-        self.sideDrawButton.setIconSize(QtCore.QSize(60, 40))
+        self.sideDrawButton.setIconSize(sideButtonSize)
 
         self.sideEraseButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
         self.sideEraseButton.setIcon(QIcon('./assets/icons/SideButton/sideEraseIcon.png'))
         self.sideEraseButton.released.connect(self.eraseDrawing)
-        self.sideEraseButton.setIconSize(QtCore.QSize(60, 40))
+        self.sideEraseButton.setIconSize(sideButtonSize)
 
         self.sidePauseButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
         self.sidePauseButton.setIcon(QIcon('./assets/icons/SideButton/sidePauseIcon.png'))
         self.sidePauseButton.released.connect(self.pauseDrawing)
-        self.sidePauseButton.setIconSize(QtCore.QSize(60, 40))
+        self.sidePauseButton.setIconSize(sideButtonSize)
 
         self.sideExitButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
         self.sideExitButton.setIcon(QIcon('./assets/icons/SideButton/sideExitIcon.png'))
         self.sideExitButton.released.connect(self.exitApp)
-        self.sideExitButton.setIconSize(QtCore.QSize(60, 40))
+        self.sideExitButton.setIconSize(sideButtonSize)
 
         # group the UI components
         buttonGroup = self.groupcomponents()
@@ -215,12 +217,12 @@ class App(QMainWindow):
         # button group box
         toolsButtonGroupBox = QGroupBox("Tools")
         toolsButtonGroupBox.setFixedWidth(100)
-        toolsButtonGroupBox.setMaximumHeight(400)
+        toolsButtonGroupBox.setMaximumHeight(450)
 
         # vertical layout
         vLayout = QVBoxLayout()
         vLayout.setSpacing(0)
-        vLayout.setContentsMargins(0, 0, 0, 0)
+        vLayout.setContentsMargins(1, 0, 0, 1)
 
         vLayout.addWidget(self.sideStartButton)
         vLayout.addWidget(self.sideDrawButton)
@@ -278,7 +280,7 @@ class App(QMainWindow):
             # if timer is stopped
             if not self.timer.isActive():
                 # create video capture  and start timer
-                self.cap = cv2.VideoCapture(0)
+                self.cap = cv2.VideoCapture(self.camera)
 
                 self.videoLabel.setText("Connecting to camera")
                 self.video_started = True
@@ -372,6 +374,45 @@ class App(QMainWindow):
             self.filePath = files[0]
             # go ahead and read the file if necessary
 
+    def pixmapToArray(self, pixmap):
+        # Get the size of the current pixmap
+        size = pixmap.size()
+        h = size.width()
+        w = size.height()
+        channels_count = 4
+
+        # Get the QImage Item and convert it to a byte string
+        qimg = pixmap.toImage()
+        s = qimg.bits().asstring(w * h * channels_count)
+        img = np.fromstring(s, dtype=np.uint8).reshape((w, h, channels_count))
+
+        return img
+
+    # compute homography
+    def getHomography(self):
+        K_cam = np.array([[1198.370216, 0.0000, 558.550289],
+                          [0, 1217.432399, 303.112548],
+                          [0, 0, 1]])
+
+        K_proj = np.array([[1682.580944, 0.0000, 377.944090],
+                           [0, 1592.522801, 259.182582],
+                           [0, 0, 1]])
+
+        T = np.array([-100.121874, -35.443266, 86.250559])
+
+        R = np.array([[9.9753117267249736e-001, 2.4600138893772598e-002, 6.5775319938706903e-002],
+                      [-2.5830952403295852e-002, 9.9950555626341375e-001, 1.7927768865717380e-002],
+                      [-6.5301772139589140e-002, -1.9582547458668855e-002, 9.9767339464899940e-001]])
+        H = K_proj * R * (np.linalg.inv(K_cam))
+        return H
+
+    # apply image transform
+    def getHomographyTransform(self, H, image):
+        width = image.shape[0]
+        height = image.shape[1]
+        transformedImage = cv2.warpPerspective(image, H, (height, width))
+        return transformedImage
+
     # normal application exit
     def exitApp(self):
         if self.timer.isActive():
@@ -420,6 +461,16 @@ class App(QMainWindow):
             # update the paint in both screens
             scaled_pixmap = self.draw_pixmap.scaled(self.secondaryWindow.secWidth, self.secondaryWindow.secHeight,
                                                     Qt.IgnoreAspectRatio, Qt.FastTransformation)
+
+            # apply homography transform
+            # numpyImage = self.pixmapToArray(QPixmap(scaled_pixmap))
+            # H = self.getHomography()
+            # hImage = self.getHomographyTransform(H, numpyImage)
+            #
+            # # display the image
+            # # secImage = QPixmap.fromImage(hTransformed)
+            # image = QtGui.QImage(hImage, hImage.shape[1], hImage.shape[0], hImage.shape[1] * 3,QtGui.QImage.Format_RGB888)
+            # pix = QtGui.QPixmap(image)
             self.secondaryWindow.label.setPixmap(scaled_pixmap)
             # self.secondaryWindow.label.resize(self.secondaryWindow.width(), self.secondaryWindow.height())
             self.update()
