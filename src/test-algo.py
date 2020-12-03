@@ -1,18 +1,16 @@
 import cv2
 import numpy as np
 import importlib
-from src import Algorithm
+from Algorithm import mainAlgorithm
 
 if __name__ == '__main__':
 
-    filename = '../assets/models/with_bordeaux_background.png'
+    filename = '../assets/models/computer_grid.png'
     dim = (600, 600)
     img = cv2.resize(cv2.imread(filename), dim)
 
-    print(img.shape)
-
     # prepare main algorithm
-    tool = Algorithm.mainAlgorithm(img, desc="Main algorithm")       # create this function
+    tool = mainAlgorithm(img, desc="Main algorithm")
 
     blue_channel = tool.based_on_green_channel()
     # display results
