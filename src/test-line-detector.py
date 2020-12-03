@@ -10,7 +10,7 @@ if __name__ == '__main__':
     data_input = '../assets/models/computer_grid.png'
     model = '../assets/models/blue-greed.png'
 
-    dim = (900, 900)
+    dim = (600, 600)
     img_in = cv2.resize(cv2.imread(data_input), dim)
     # img_in = cv2.cvtColor(img_in, cv2.COLOR_BGR2GRAY)
 
