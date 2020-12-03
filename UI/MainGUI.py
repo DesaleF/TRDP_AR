@@ -1,9 +1,9 @@
 import sys
 import cv2
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import QTimer, Qt, QPoint, QRect, QSize
 from PyQt5.QtGui import QPixmap, QImage, QIcon, QPainter, QPen, QCursor
-from PyQt5.QtWidgets import QLabel, QMainWindow, QGridLayout, QApplication
+from PyQt5.QtWidgets import QLabel, QMainWindow, QGridLayout, QApplication, QVBoxLayout, QGroupBox
 
 # this UI serve as main window to draw the annotation
 from UI.projectorWindow import ProjectorWindow
@@ -18,8 +18,13 @@ class App(QMainWindow):
         self.title = 'PROJECTION AR'
         self.left = 300
         self.top = 100
-        # self.width = 1400
-        # self.height = 900
+
+        # offsets
+        self.pointerOffsetX = 123
+        self.pointerOffsetY = 63
+        self.imageOffsetX = 250
+        self.imageOffsetY = 200
+
         self.sizeObject = QtWidgets.QDesktopWidget().screenGeometry(-1)
         self.bold_font = QtGui.QFont("Times", 10, QtGui.QFont.Bold)
         self.secondaryWindow = ProjectorWindow()
@@ -36,10 +41,11 @@ class App(QMainWindow):
         self.cursor = None
 
         # variable for annotation
-        self.draw_pixmap = QPixmap(self.sizeObject.width()-20, self.sizeObject.height()-100)
+        self.draw_pixmap = QPixmap(self.sizeObject.width()-self.imageOffsetX, self.sizeObject.height()-self.imageOffsetY)
         self.draw_pixmap.fill(Qt.transparent)
         self.painter = QPainter(self.draw_pixmap)
         self.annotation_label = QLabel(self)
+        self.videoLabel = QLabel("Start Video", self)
 
         # custom drawing variables
         self.drawing = False
@@ -52,11 +58,16 @@ class App(QMainWindow):
         self.editCursor = QCursor(QPixmap("./assets/icons/cursor/icons8-edit-24.png"))
         self.eraseCursor = QCursor(QPixmap("./assets/icons/cursor/icons8-erase-28.png"))
 
-        # 1. components of the UI
-        self.createUIComponents()
-        # 2. menu bar for file
+        # side Button
+        self.sideStartButton = QtWidgets.QToolButton(self)
+        self.sideDrawButton = QtWidgets.QToolButton(self)
+        self.sideEraseButton = QtWidgets.QToolButton(self)
+        self.sidePauseButton = QtWidgets.QToolButton(self)
+        self.sideExitButton = QtWidgets.QToolButton(self)
+
+        # menu bar for file
         self.createMenu()
-        # 3. Build UI
+        # Build UI
         self.buildUI()
 
     def buildUI(self):
@@ -66,26 +77,45 @@ class App(QMainWindow):
         # window location and title
         self.setWindowTitle(self.title)
         # self.setGeometry(self.left, self.top, self.width(), self.height())
-        self.setWindowIcon(QIcon("../assets/icons/icon-green.png"))
+        self.setWindowIcon(QIcon("./assets/icons/icon-green.png"))
         self.showMaximized()
 
+        # side Button process
+        self.sideStartButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
+        self.sideStartButton.setIcon(QIcon('./assets/icons/SideButton/sidePlayIcon.png'))
+        self.sideStartButton.released.connect(self.startVideo)
+        self.sideStartButton.setIconSize(QtCore.QSize(60, 40))
+
+        self.sideDrawButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
+        self.sideDrawButton.setIcon(QIcon('./assets/icons/SideButton/sideEditIcon.png'))
+        self.sideDrawButton.released.connect(self.drawUsingPencil)
+        self.sideDrawButton.setIconSize(QtCore.QSize(60, 40))
+
+        self.sideEraseButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
+        self.sideEraseButton.setIcon(QIcon('./assets/icons/SideButton/sideEraseIcon.png'))
+        self.sideEraseButton.released.connect(self.eraseDrawing)
+        self.sideEraseButton.setIconSize(QtCore.QSize(60, 40))
+
+        self.sidePauseButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
+        self.sidePauseButton.setIcon(QIcon('./assets/icons/SideButton/sidePauseIcon.png'))
+        self.sidePauseButton.released.connect(self.pauseDrawing)
+        self.sidePauseButton.setIconSize(QtCore.QSize(60, 40))
+
+        self.sideExitButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
+        self.sideExitButton.setIcon(QIcon('./assets/icons/SideButton/sideExitIcon.png'))
+        self.sideExitButton.released.connect(self.exitApp)
+        self.sideExitButton.setIconSize(QtCore.QSize(60, 40))
+
+        # group the UI components
+        buttonGroup = self.groupcomponents()
+
         #  final layout.. all components together
-        self.finalUi()
+        self.finalUi(buttonGroup)
 
         # show the UI
         self.show()
         # create projector window
         self.secondaryWindow.show()
-
-    def createUIComponents(self):
-        """
-
-        """
-        # Main video label
-        self.videoLabel = QLabel("Start Video", self)
-        self.videoLabel.setFont(self.bold_font)
-        # self.videoLabel.setStyleSheet("border: 1px solid black;")
-        # self.change_button_status()
 
     def createMenu(self):
         """  Create and add menu items into menu bar
@@ -178,21 +208,69 @@ class App(QMainWindow):
         self.erase40ActionSize.triggered.connect(self.eraserSize40)
         self.erase40ActionSize.setIcon(QIcon("./assets/icons/penSize/px9.png"))
 
-    def finalUi(self):
+    def groupcomponents(self):
         """
 
         """
+        # button group box
+        toolsButtonGroupBox = QGroupBox("Tools")
+        toolsButtonGroupBox.setFixedWidth(100)
+        toolsButtonGroupBox.setMaximumHeight(400)
+
+        # vertical layout
+        vLayout = QVBoxLayout()
+        vLayout.setSpacing(0)
+        vLayout.setContentsMargins(0, 0, 0, 0)
+
+        vLayout.addWidget(self.sideStartButton)
+        vLayout.addWidget(self.sideDrawButton)
+        vLayout.addWidget(self.sideEraseButton)
+        vLayout.addWidget(self.sidePauseButton)
+        vLayout.addWidget(self.sideExitButton)
+
+        # set the layout to the button group
+        toolsButtonGroupBox.setLayout(vLayout)
+        return toolsButtonGroupBox
+
+    def finalUi(self, buttonGroup):
+        """
+
+        """
+        # button group box
+        colorVBox = QGroupBox("Colors")
+        colorVBox.setFixedWidth(45)
+        colorVBox.setMaximumHeight(1000)
+
+        # vertical layout
+        colorVLayout = QVBoxLayout()
+        colorVLayout.setSpacing(0)
+        colorVLayout.setContentsMargins(0, 0, 0, 0)
+        self.add_palette_buttons(colorVLayout)
+
+        # set the layout to the button group
+        colorVBox.setLayout(colorVLayout)
+
         gridLayout = QGridLayout()
 
         # add widgets to the layout
-        # gridLayout.addWidget(buttonGroup, 0, 0)
-        gridLayout.addWidget(self.videoLabel, 0, 1, 1, 8)
-        gridLayout.addWidget(self.annotation_label, 0, 1, 1, 8)
+        gridLayout.addWidget(buttonGroup, 0, 0)
+        gridLayout.addWidget(self.videoLabel, 0, 1)
+        gridLayout.addWidget(self.annotation_label, 0, 1)
+        gridLayout.addWidget(colorVBox, 0, 2)
 
         # widget for the general layout
         wid = QtWidgets.QWidget(self)
         self.setCentralWidget(wid)
         wid.setLayout(gridLayout)
+
+    def add_palette_buttons(self, layout):
+        for c in COLORS:
+            b = QPaletteButton(c)
+            b.pressed.connect(lambda c=c: self.set_pen_color(c))
+            layout.addWidget(b)
+
+    def set_pen_color(self, c):
+        self.brushColor = QtGui.QColor(c)
 
     def startVideo(self):
         """  This will start the camera feed """
@@ -230,7 +308,7 @@ class App(QMainWindow):
             # read form camera
             ret, image = self.cap.read()
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image = cv2.resize(image, (self.sizeObject.width()-20, self.sizeObject.height()-100))
+            image = cv2.resize(image, (self.sizeObject.width()-self.imageOffsetX, self.sizeObject.height()-self.imageOffsetY))
 
             # get image info
             height, width, channel = image.shape
@@ -283,12 +361,13 @@ class App(QMainWindow):
     def eraserSize40(self):
         self.clear_size = 40
 
+    # open file to load image
     def openFileNamesDialog(self):
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
         files, _ = QtWidgets.QFileDialog.getOpenFileNames(
             self, "QtWidgets.QFileDialog.getOpenFileNames()",
-            "", "Dicom Files (*.*)", options=options)
+            "", "png Files (*.png)", options=options)
         if files:
             self.filePath = files[0]
             # go ahead and read the file if necessary
@@ -303,16 +382,21 @@ class App(QMainWindow):
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton and self.video_started:
             self.lastPoint = event.pos()
-            self.lastPoint.setX(self.lastPoint.x() - 20)
-            self.lastPoint.setY(self.lastPoint.y() - 15)
+            self.lastPoint.setX(self.lastPoint.x() - self.pointerOffsetX)
+            self.lastPoint.setY(self.lastPoint.y() - self.pointerOffsetY)
 
+    # mouseMoveEvent(sefl, event)
+    # Works: yes
+    # TODO:
+    #   - rise the annotation image as size(secondScreen.width, secondScreen.height)
+    #   - resize secondary image to fit the screen
     def mouseMoveEvent(self, event):
 
         if (event.buttons() & Qt.LeftButton) and self.rect().contains(event.pos()):
             self.painter.setOpacity(0.9)
             currentPoint = event.pos()
-            currentPoint.setX(currentPoint.x() - 20)
-            currentPoint.setY(currentPoint.y() - 15)
+            currentPoint.setX(currentPoint.x() - self.pointerOffsetX)
+            currentPoint.setY(currentPoint.y() - self.pointerOffsetY)
 
             # drawing annotation
             if self.drawing:
@@ -334,8 +418,10 @@ class App(QMainWindow):
             self.lastPoint = currentPoint
 
             # update the paint in both screens
-            self.secondaryWindow.label.setPixmap(self.draw_pixmap)
-            self.secondaryWindow.label.resize(self.secondaryWindow.width(), self.secondaryWindow.height())
+            scaled_pixmap = self.draw_pixmap.scaled(self.secondaryWindow.secWidth, self.secondaryWindow.secHeight,
+                                                    Qt.IgnoreAspectRatio, Qt.FastTransformation)
+            self.secondaryWindow.label.setPixmap(scaled_pixmap)
+            # self.secondaryWindow.label.resize(self.secondaryWindow.width(), self.secondaryWindow.height())
             self.update()
 
     # highlight
@@ -350,6 +436,23 @@ class App(QMainWindow):
             self.draw_pixmap.save(filePath)
         except Exception as ex:
             print(ex)
+
+
+COLORS = [
+    # 17 undertones https://lospec.com/palette-list/17undertones
+    '#000000', '#00ff00', '#414168', '#3a7fa7', '#35e3e3', '#8fd970', '#5ebb49',
+    '#458352', '#dcd37b', '#fffee5', '#ffd035', '#cc9245', '#a15c3e', '#a42f3b',
+    '#f45b7a', '#c24998', '#81588d', '#bcb0c2', '#ffffff',
+    ]
+
+
+class QPaletteButton(QtWidgets.QPushButton):
+
+    def __init__(self, color):
+        super().__init__()
+        self.setFixedSize(QtCore.QSize(24,24))
+        self.color = color
+        self.setStyleSheet("background-color: %s;" % color)
 
 
 if __name__ == '__main__':
