@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 MIN_MATCH_COUNT = 10
-import yaml
+# import yaml
 
 
 def main():
@@ -23,6 +23,7 @@ def opencv_matrix(loader, node):
     mat = np.array(mapping["data"])
     mat.resize(mapping["rows"], mapping["cols"])
     return mat
+
 
 
 def loading_using_sci():

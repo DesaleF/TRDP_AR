@@ -2,7 +2,8 @@ import cv2
 import numpy as np
 import importlib
 from skimage.metrics import structural_similarity
-from LineDetector import LineDetector
+
+from src.LineDetector import LineDetector
 
 if __name__ == '__main__':
 

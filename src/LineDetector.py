@@ -105,7 +105,7 @@ class LineDetector:
         color = (0, 255, 0)
         font = cv2.FONT_HERSHEY_SIMPLEX
 
-        # Painiting the detected corners
+        # Painting the detected corners
         for corner in corners:
             x, y = corner.ravel()
             cv2.circle(output, (x, y), 5, color, -1)
