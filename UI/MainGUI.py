@@ -6,8 +6,9 @@ from PyQt5.QtCore import QTimer, Qt, QPoint, QRect, QSize
 from PyQt5.QtGui import QPixmap, QImage, QIcon, QPainter, QPen, QCursor
 from PyQt5.QtWidgets import QLabel, QMainWindow, QGridLayout, QApplication, QVBoxLayout, QGroupBox
 
-# this UI serve as main window to draw the annotation
+# our packages
 from UI.projectorWindow import ProjectorWindow
+from src.Preprocess import PreProcessImages
 
 
 class App(QMainWindow):
@@ -29,6 +30,7 @@ class App(QMainWindow):
         self.sizeObject = QtWidgets.QDesktopWidget().screenGeometry(-1)
         self.bold_font = QtGui.QFont("Times", 10, QtGui.QFont.Bold)
         self.secondaryWindow = ProjectorWindow()
+        self.preProcessingTool = PreProcessImages()
 
         # Flags
         self.video_started = False
@@ -309,15 +311,18 @@ class App(QMainWindow):
         try:
             # read form camera
             ret, image = self.cap.read()
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image = cv2.resize(image, (self.sizeObject.width()-self.imageOffsetX, self.sizeObject.height()-self.imageOffsetY))
+            raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
+            wrapped = self.preProcessingTool.fourPointTransform(raw_image)
+            # print(self.preProcessingTool.pts)
+            wrapped = cv2.resize(wrapped, (self.sizeObject.width()-self.imageOffsetX, self.sizeObject.height()-self.imageOffsetY))
+            print('still working')
             # get image info
-            height, width, channel = image.shape
+            height, width, channel = wrapped.shape
             step = channel * width
 
             # create QImage and show it onto the label
-            qImg = QImage(image.data, width, height, step, QImage.Format_RGB888)
+            qImg = QImage(wrapped.data, width, height, step, QImage.Format_RGB888)
             self.videoLabel.setPixmap(QPixmap.fromImage(qImg))
 
         except Exception as exc:

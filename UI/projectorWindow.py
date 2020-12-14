@@ -1,3 +1,5 @@
+import cv2
+import numpy as np
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
 from PyQt5.QtWidgets import QDesktopWidget
@@ -15,7 +17,7 @@ class ProjectorWindow(QWidget):
         super().__init__()
         layout = QVBoxLayout()
         self.label = QLabel("Secondary Window")
-        self.label.setStyleSheet("margin:0px;background:transparent;border: 5px solid red;")
+        self.label.setStyleSheet("margin:0px;background:transparent; border:0px solid white;")
 
         # create transparent layout
         layout.addWidget(self.label)
@@ -33,8 +35,6 @@ class ProjectorWindow(QWidget):
         # to get the screen size
         for displayNr in range(QDesktopWidget().screenCount()):
             self.screen = QDesktopWidget().screenGeometry(displayNr)
-        self.secHeight = self.screen.height()-50
-        self.secWidth = self.screen.width()-50
-
-
+        self.secHeight = self.screen.height()-40
+        self.secWidth = self.screen.width()-30
 
