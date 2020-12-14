@@ -314,7 +314,7 @@ class App(QMainWindow):
             raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
             wrapped = self.preProcessingTool.fourPointTransform(raw_image)
-            # print(self.preProcessingTool.pts)
+            self.secondaryWindow.label.setStyleSheet("background:transparent;")
             wrapped = cv2.resize(wrapped, (self.sizeObject.width()-self.imageOffsetX, self.sizeObject.height()-self.imageOffsetY))
             print('still working')
             # get image info

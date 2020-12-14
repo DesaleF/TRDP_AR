@@ -28,7 +28,7 @@ class PreProcessImages:
 
         # convert the image to grayscale, blur it,
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        gray = cv2.GaussianBlur(gray, (7, 7), 0)
+        gray = cv2.GaussianBlur(gray, (5, 5), 0)
 
         # find edges in the image
         edged = cv2.Canny(gray, 75, 200)
@@ -46,11 +46,12 @@ class PreProcessImages:
             # if contour has four points, then we can assume that we have found our screen
             if len(approx) == 4:
                 rect = approx
-                break
+                cv2.drawContours(image, [rect], -1, (0, 255, 0), 2)
+                # break
 
         # save the contour (outline) of the projector screen
         print("STEP 2: Find contours of paper")
-        cv2.drawContours(image, [rect], -1, (0, 255, 0), 2)
+
         cv2.imwrite("Outline.png", image)
         return rect.reshape(4, 2) * ratio
 
