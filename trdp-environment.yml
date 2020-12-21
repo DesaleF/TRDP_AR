@@ -78,4 +78,4 @@ dependencies:
     - scikit-image==0.17.2
     - tifffile==2020.12.4
     - urllib3==1.25.10
-prefix: /home/backrest/anaconda3/envs/trdp-env
+prefix: /home/user/anaconda3/envs/trdp
