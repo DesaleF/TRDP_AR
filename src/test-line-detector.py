@@ -49,7 +49,7 @@ if __name__ == '__main__':
     cv2.imshow('lines', image_of_lines)
     cv2.imshow('diff', diff)
     cv2.imshow('Corner', corners)
-    cv2.imshow('Filtered', green_only)
+    cv2.imshow('GREEN ONLY', green_only)
     cv2.imshow('Filtered Binary', green_only_binary)
 
     # cv2.imshow('Lines Model', output_image_model)

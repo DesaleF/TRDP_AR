@@ -1,5 +1,6 @@
 import sys
 import cv2
+import traceback
 import numpy as np
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import QTimer, Qt, QPoint, QRect, QSize
@@ -19,7 +20,7 @@ class App(QMainWindow):
         self.title = 'PROJECTION AR'
         self.left = 300
         self.top = 100
-        self.camera = 2
+        self.camera = 0
 
         # offsets
         self.pointerOffsetX = 123
@@ -61,8 +62,8 @@ class App(QMainWindow):
         self.lastPoint = QPoint()
 
         # cursor setting
-        self.editCursor = QCursor(QPixmap("./assets/icons/cursor/icons8-edit-24.png"))
-        self.eraseCursor = QCursor(QPixmap("./assets/icons/cursor/icons8-erase-28.png"))
+        self.editCursor = QCursor(QPixmap(".../assets/icons/cursor/icons8-edit-24.png"))
+        self.eraseCursor = QCursor(QPixmap("../assets/icons/cursor/icons8-erase-28.png"))
 
         # side Button
         self.sideStartButton = QtWidgets.QToolButton(self)
@@ -83,33 +84,33 @@ class App(QMainWindow):
         # window location and title
         self.setWindowTitle(self.title)
         # self.setGeometry(self.left, self.top, self.width(), self.height())
-        self.setWindowIcon(QIcon("./assets/icons/icon-green.png"))
+        self.setWindowIcon(QIcon("../assets/icons/icon-green.png"))
         self.showMaximized()
         sideButtonSize = QtCore.QSize(85, 55)
 
         # side Button process
         self.sideStartButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
-        self.sideStartButton.setIcon(QIcon('./assets/icons/SideButton/sidePlayIcon.png'))
+        self.sideStartButton.setIcon(QIcon('../assets/icons/SideButton/sidePlayIcon.png'))
         self.sideStartButton.released.connect(self.startVideo)
         self.sideStartButton.setIconSize(sideButtonSize)
 
         self.sideDrawButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
-        self.sideDrawButton.setIcon(QIcon('./assets/icons/SideButton/sideEditIcon.png'))
+        self.sideDrawButton.setIcon(QIcon('../assets/icons/SideButton/sideEditIcon.png'))
         self.sideDrawButton.released.connect(self.drawUsingPencil)
         self.sideDrawButton.setIconSize(sideButtonSize)
 
         self.sideEraseButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
-        self.sideEraseButton.setIcon(QIcon('./assets/icons/SideButton/sideEraseIcon.png'))
+        self.sideEraseButton.setIcon(QIcon('../assets/icons/SideButton/sideEraseIcon.png'))
         self.sideEraseButton.released.connect(self.eraseDrawing)
         self.sideEraseButton.setIconSize(sideButtonSize)
 
         self.sidePauseButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
-        self.sidePauseButton.setIcon(QIcon('./assets/icons/SideButton/sidePauseIcon.png'))
+        self.sidePauseButton.setIcon(QIcon('../assets/icons/SideButton/sidePauseIcon.png'))
         self.sidePauseButton.released.connect(self.pauseDrawing)
         self.sidePauseButton.setIconSize(sideButtonSize)
 
         self.sideExitButton.setToolButtonStyle(Qt.ToolButtonIconOnly)
-        self.sideExitButton.setIcon(QIcon('./assets/icons/SideButton/sideExitIcon.png'))
+        self.sideExitButton.setIcon(QIcon('../assets/icons/SideButton/sideExitIcon.png'))
         self.sideExitButton.released.connect(self.exitApp)
         self.sideExitButton.setIconSize(sideButtonSize)
 
@@ -146,74 +147,74 @@ class App(QMainWindow):
         self.rectangleButton = self.editMenuBar.addAction("Select")
 
         # Pencil tool
-        self.pencilButton.setIcon(QIcon("./assets/icons/icons8-pencil-50.png"))
+        self.pencilButton.setIcon(QIcon("../assets/icons/icons8-pencil-50.png"))
         self.pencilButton.triggered.connect(self.drawUsingPencil)
 
         # rectangle tool
-        self.rectangleButton.setIcon(QIcon("./assets/icons/icons8-rectangle-50.png"))
+        self.rectangleButton.setIcon(QIcon("../assets/icons/icons8-rectangle-50.png"))
 
         # Erase tool
         self.eraseButton.setShortcut("Ctrl+X")
-        self.eraseButton.setIcon(QIcon("./assets/icons/icons8-eraser.png"))
+        self.eraseButton.setIcon(QIcon("../assets/icons/icons8-eraser.png"))
         self.eraseButton.triggered.connect(self.eraseDrawing)
 
         # lasso tool
         self.lassoButton.setShortcut("Ctrl+L")
-        self.lassoButton.setIcon(QIcon("./assets/icons/icons8-lasso-tool-48.png"))
+        self.lassoButton.setIcon(QIcon("../assets/icons/icons8-lasso-tool-48.png"))
 
         # Stop Video button
         self.stopVideoButton.setShortcut('Ctrl+P')
-        self.stopVideoButton.setIcon(QIcon("./assets/icons/icons8-stop-squared-50.png"))
+        self.stopVideoButton.setIcon(QIcon("../assets/icons/icons8-stop-squared-50.png"))
         self.stopVideoButton.triggered.connect(self.pauseDrawing)
 
         # start button
         self.startVideoButton.setShortcut('Ctrl+S')
-        self.startVideoButton.setIcon(QIcon("./assets/icons/icons8-start-50.png"))
+        self.startVideoButton.setIcon(QIcon("../assets/icons/icons8-start-50.png"))
         self.startVideoButton.triggered.connect(self.startVideo)
 
         # create menu bar to put some menu Options
         self.actionOpen.setShortcut('Ctrl+O')
-        self.actionOpen.setIcon(QIcon("./assets/icons/open_file_icon.png"))
+        self.actionOpen.setIcon(QIcon("../assets/icons/open_file_icon.png"))
         self.actionOpen.triggered.connect(self.openFileNamesDialog)
 
         # add exit option to exit the program(keyboard shortcut ctrl+q)
         self.actionExit.setShortcut('Ctrl+Q')
-        self.actionExit.setIcon(QIcon("./assets/icons/icons8-exit-50.png"))
+        self.actionExit.setIcon(QIcon("../assets/icons/icons8-exit-50.png"))
         self.actionExit.triggered.connect(self.exitApp)
 
         # Pencil size menu
         self.threepxActionSize = self.brushSizeBar.addAction("3px")
         self.threepxActionSize.triggered.connect(self.threePixel)
-        self.threepxActionSize.setIcon(QIcon("./assets/icons/penSize/px3.png"))
+        self.threepxActionSize.setIcon(QIcon("../assets/icons/penSize/px3.png"))
 
         self.fivepxActionSize = self.brushSizeBar.addAction("5px")
         self.fivepxActionSize.triggered.connect(self.fivePixel)
-        self.fivepxActionSize.setIcon(QIcon("./assets/icons/penSize/px5.png"))
+        self.fivepxActionSize.setIcon(QIcon("../assets/icons/penSize/px5.png"))
 
         self.sevenpxActionSize = self.brushSizeBar.addAction("7px")
         self.sevenpxActionSize.triggered.connect(self.sevenPixel)
-        self.sevenpxActionSize.setIcon(QIcon("./assets/icons/penSize/px7.png"))
+        self.sevenpxActionSize.setIcon(QIcon("../assets/icons/penSize/px7.png"))
 
         self.ninepxActionSize = self.brushSizeBar.addAction("9px")
         self.ninepxActionSize.triggered.connect(self.ninePixel)
-        self.ninepxActionSize.setIcon(QIcon("./assets/icons/penSize/px9.png"))
+        self.ninepxActionSize.setIcon(QIcon("../assets/icons/penSize/px9.png"))
 
         # Eraser size menu
         self.erase10ActionSize = self.eraserSizeBar.addAction("10px")
         self.erase10ActionSize.triggered.connect(self.eraserSize10)
-        self.erase10ActionSize.setIcon(QIcon("./assets/icons/penSize/px3.png"))
+        self.erase10ActionSize.setIcon(QIcon("../assets/icons/penSize/px3.png"))
 
         self.erase20ActionSize = self.eraserSizeBar.addAction("20px")
         self.erase20ActionSize.triggered.connect(self.eraserSize20)
-        self.erase20ActionSize.setIcon(QIcon("./assets/icons/penSize/px5.png"))
+        self.erase20ActionSize.setIcon(QIcon("../assets/icons/penSize/px5.png"))
 
         self.erase30ActionSize = self.eraserSizeBar.addAction("30px")
         self.erase30ActionSize.triggered.connect(self.eraserSize30)
-        self.erase30ActionSize.setIcon(QIcon("./assets/icons/penSize/px7.png"))
+        self.erase30ActionSize.setIcon(QIcon("../assets/icons/penSize/px7.png"))
 
         self.erase40ActionSize = self.eraserSizeBar.addAction("40px")
         self.erase40ActionSize.triggered.connect(self.eraserSize40)
-        self.erase40ActionSize.setIcon(QIcon("./assets/icons/penSize/px9.png"))
+        self.erase40ActionSize.setIcon(QIcon("../assets/icons/penSize/px9.png"))
 
     def groupcomponents(self):
         """
@@ -416,10 +417,12 @@ class App(QMainWindow):
                       [-2.5830952403295852e-002, 9.9950555626341375e-001, 1.7927768865717380e-002],
                       [-6.5301772139589140e-002, -1.9582547458668855e-002, 9.9767339464899940e-001]])
         H = K_proj * R * (np.linalg.inv(K_cam))
+
         return H
 
     # apply image transform
     def getHomographyTransform(self, H, image):
+
         width = image.shape[0]
         height = image.shape[1]
         transformedImage = cv2.warpPerspective(image, H, (height, width))
@@ -526,3 +529,4 @@ if __name__ == '__main__':
         sys.exit(app.exec_())
     except Exception as ex:
         print(ex)
+        traceback.print_exc()
