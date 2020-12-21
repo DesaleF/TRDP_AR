@@ -128,3 +128,12 @@ class PreProcessImages:
 
         # return the ordered coordinates
         return rect
+
+
+''' [[[134  99]]
+
+ [[131 378]]
+
+ [[591 383]]
+
+ [[594 110]]] '''

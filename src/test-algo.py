@@ -13,9 +13,9 @@ if __name__ == '__main__':
     algo = PreProcessImages()
 
     # wrapped image
-    # wrapped = algo.fourPointTransform(img)
+    wrapped = algo.fourPointTransform(img)
 
-    rect, wrapped = algo.getCorner(img)
+    # rect, wrapped = algo.getCorner(img)
     cv2.imshow('Original Image', img)
     cv2.imshow('wrapped', wrapped)
 
