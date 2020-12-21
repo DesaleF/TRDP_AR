@@ -38,21 +38,27 @@ class PreProcessImages:
         cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:5]
 
         # loop over the contours
+        count = 0
+        test_image = image.copy()
         for c in cnts:
             # approximate the contour
             peri = cv2.arcLength(c, True)
-            approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+            approx = cv2.approxPolyDP(c, 0.01 * peri, True)
 
             # if contour has four points, then we can assume that we have found our screen
             if len(approx) == 4:
                 rect = approx
                 cv2.drawContours(image, [rect], -1, (0, 255, 0), 2)
-                # break
+                break
+            else:
+                print(len(approx))
+                cv2.drawContours(test_image, [approx], count, (0, 0, 255), 4)
 
         # save the contour (outline) of the projector screen
-        print("STEP 2: Find contours of paper")
+        # print("STEP 2: Find contours of paper")
 
         cv2.imwrite("Outline.png", image)
+        cv2.imwrite("testOutline.png", test_image)
         return rect.reshape(4, 2) * ratio
 
     # Name:fourPointTransform()

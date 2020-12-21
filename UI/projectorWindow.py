@@ -13,17 +13,20 @@ class ProjectorWindow(QWidget):
     This "window" is a QWidget. If it has no parent, it
     will appear as a free-floating window as we want.
     """
-    def __init__(self):
+    def __init__(self, transparent):
         super().__init__()
         layout = QVBoxLayout()
         self.label = QLabel("Secondary Window")
-        self.label.setStyleSheet("background:white;")
+        self.label.setStyleSheet("background:transparent;")
 
         # create transparent layout
         layout.addWidget(self.label)
         self.setLayout(layout)
         # self.setStyleSheet("background:white;")
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        if transparent:
+            self.setAttribute(Qt.WA_TranslucentBackground)
+        else:
+            self.setStyleSheet("background:white;")
 
         # show the window on the second screen
         if QDesktopWidget.screenCount(QDesktopWidget()) > 1:
@@ -36,6 +39,6 @@ class ProjectorWindow(QWidget):
         for displayNr in range(QDesktopWidget().screenCount()):
             self.screen = QDesktopWidget().screenGeometry(displayNr)
         self.secHeight = self.screen.height()-40
-        self.secWidth = self.screen.width()-30
+        self.secWidth = self.screen.width()-40
         self.setMinimumSize(self.secWidth, self.secHeight)
 

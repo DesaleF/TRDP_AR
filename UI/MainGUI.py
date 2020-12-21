@@ -26,10 +26,13 @@ class App(QMainWindow):
         self.pointerOffsetY = 63
         self.imageOffsetX = 250
         self.imageOffsetY = 200
+        self.is_secondWindow = True
+        self.secondTransparncy = True
 
         self.sizeObject = QtWidgets.QDesktopWidget().screenGeometry(-1)
         self.bold_font = QtGui.QFont("Times", 10, QtGui.QFont.Bold)
-        self.secondaryWindow = ProjectorWindow()
+        self.secondaryWindow = ProjectorWindow(None)
+        self.secondaryWindow_final = ProjectorWindow(self.secondTransparncy)
         self.preProcessingTool = PreProcessImages()
 
         # Flags
@@ -312,11 +315,15 @@ class App(QMainWindow):
             # read form camera
             ret, image = self.cap.read()
             raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
             wrapped = self.preProcessingTool.fourPointTransform(raw_image)
-            self.secondaryWindow.label.setStyleSheet("background:transparent;")
+
+            #  recreate the second window
+            if self.is_secondWindow:
+                self.secondaryWindow.close()
+                self.secondaryWindow_final.show()
+                self.is_secondWindow = False
+
             wrapped = cv2.resize(wrapped, (self.sizeObject.width()-self.imageOffsetX, self.sizeObject.height()-self.imageOffsetY))
-            print('still working')
             # get image info
             height, width, channel = wrapped.shape
             step = channel * width
@@ -464,7 +471,7 @@ class App(QMainWindow):
             self.lastPoint = currentPoint
 
             # update the paint in both screens
-            scaled_pixmap = self.draw_pixmap.scaled(self.secondaryWindow.secWidth, self.secondaryWindow.secHeight,
+            scaled_pixmap = self.draw_pixmap.scaled(self.secondaryWindow_final.secWidth, self.secondaryWindow_final.secHeight,
                                                     Qt.IgnoreAspectRatio, Qt.FastTransformation)
 
             # apply homography transform
@@ -476,8 +483,8 @@ class App(QMainWindow):
             # # secImage = QPixmap.fromImage(hTransformed)
             # image = QtGui.QImage(hImage, hImage.shape[1], hImage.shape[0], hImage.shape[1] * 3,QtGui.QImage.Format_RGB888)
             # pix = QtGui.QPixmap(image)
-            self.secondaryWindow.label.setPixmap(scaled_pixmap)
-            # self.secondaryWindow.label.resize(self.secondaryWindow.width(), self.secondaryWindow.height())
+            self.secondaryWindow_final.label.setPixmap(scaled_pixmap)
+            # self.secondaryWindow_final.label.resize(self.secondaryWindow_final.width(), self.secondaryWindow_final.height())
             self.update()
 
     # highlight
