@@ -48,7 +48,8 @@ class App(QMainWindow):
         self.cursor = None
 
         # variable for annotation
-        self.draw_pixmap = QPixmap(self.sizeObject.width()-self.imageOffsetX, self.sizeObject.height()-self.imageOffsetY)
+        self.draw_pixmap = QPixmap(self.sizeObject.width() - self.imageOffsetX,
+                                   self.sizeObject.height() - self.imageOffsetY)
         self.draw_pixmap.fill(Qt.transparent)
         self.painter = QPainter(self.draw_pixmap)
         self.annotation_label = QLabel(self)
@@ -184,36 +185,36 @@ class App(QMainWindow):
 
         # Pencil size menu
         self.threepxActionSize = self.brushSizeBar.addAction("3px")
-        self.threepxActionSize.triggered.connect(self.threePixel)
+        self.threepxActionSize.triggered.connect(lambda: self.changePencilSize(3))
         self.threepxActionSize.setIcon(QIcon("../assets/icons/penSize/px3.png"))
 
         self.fivepxActionSize = self.brushSizeBar.addAction("5px")
-        self.fivepxActionSize.triggered.connect(self.fivePixel)
+        self.fivepxActionSize.triggered.connect(lambda: self.changePencilSize(5))
         self.fivepxActionSize.setIcon(QIcon("../assets/icons/penSize/px5.png"))
 
         self.sevenpxActionSize = self.brushSizeBar.addAction("7px")
-        self.sevenpxActionSize.triggered.connect(self.sevenPixel)
+        self.sevenpxActionSize.triggered.connect(lambda: self.changePencilSize(7))
         self.sevenpxActionSize.setIcon(QIcon("../assets/icons/penSize/px7.png"))
 
         self.ninepxActionSize = self.brushSizeBar.addAction("9px")
-        self.ninepxActionSize.triggered.connect(self.ninePixel)
+        self.ninepxActionSize.triggered.connect(lambda: self.changePencilSize(9))
         self.ninepxActionSize.setIcon(QIcon("../assets/icons/penSize/px9.png"))
 
         # Eraser size menu
         self.erase10ActionSize = self.eraserSizeBar.addAction("10px")
-        self.erase10ActionSize.triggered.connect(self.eraserSize10)
+        self.erase10ActionSize.triggered.connect(lambda: self.changeEraserSize(10))
         self.erase10ActionSize.setIcon(QIcon("../assets/icons/penSize/px3.png"))
 
         self.erase20ActionSize = self.eraserSizeBar.addAction("20px")
-        self.erase20ActionSize.triggered.connect(self.eraserSize20)
+        self.erase20ActionSize.triggered.connect(lambda: self.changeEraserSize(20))
         self.erase20ActionSize.setIcon(QIcon("../assets/icons/penSize/px5.png"))
 
         self.erase30ActionSize = self.eraserSizeBar.addAction("30px")
-        self.erase30ActionSize.triggered.connect(self.eraserSize30)
+        self.erase30ActionSize.triggered.connect(lambda: self.changeEraserSize(30))
         self.erase30ActionSize.setIcon(QIcon("../assets/icons/penSize/px7.png"))
 
         self.erase40ActionSize = self.eraserSizeBar.addAction("40px")
-        self.erase40ActionSize.triggered.connect(self.eraserSize40)
+        self.erase40ActionSize.triggered.connect(lambda: self.changeEraserSize(40))
         self.erase40ActionSize.setIcon(QIcon("../assets/icons/penSize/px9.png"))
 
     def groupcomponents(self):
@@ -324,7 +325,8 @@ class App(QMainWindow):
                 self.secondaryWindow_final.show()
                 self.is_secondWindow = False
 
-            wrapped = cv2.resize(wrapped, (self.sizeObject.width()-self.imageOffsetX, self.sizeObject.height()-self.imageOffsetY))
+            wrapped = cv2.resize(wrapped, (
+            self.sizeObject.width() - self.imageOffsetX, self.sizeObject.height() - self.imageOffsetY))
             # get image info
             height, width, channel = wrapped.shape
             step = channel * width
@@ -351,30 +353,12 @@ class App(QMainWindow):
             self.drawing = False
 
     # pencil size
-    def threePixel(self):
-        self.brushSize = 3
-
-    def fivePixel(self):
-        self.brushSize = 5
-
-    def sevenPixel(self):
-        self.brushSize = 7
-
-    def ninePixel(self):
-        self.brushSize = 9
+    def changePencilSize(self, penSize):
+        self.brushSize = penSize
 
     # Eraser Size
-    def eraserSize10(self):
-        self.clear_size = 10
-
-    def eraserSize20(self):
-        self.clear_size = 20
-
-    def eraserSize30(self):
-        self.clear_size = 30
-
-    def eraserSize40(self):
-        self.clear_size = 40
+    def changeEraserSize(self, brushSize):
+        self.clear_size = brushSize
 
     # open file to load image
     def openFileNamesDialog(self):
@@ -461,7 +445,7 @@ class App(QMainWindow):
 
             # erasing the annotation
             elif self.erase_flag:
-                r = QRect(QPoint(), self.clear_size*QSize())
+                r = QRect(QPoint(), self.clear_size * QSize())
                 r.moveCenter(currentPoint)
                 self.painter.save()
 
@@ -474,7 +458,8 @@ class App(QMainWindow):
             self.lastPoint = currentPoint
 
             # update the paint in both screens
-            scaled_pixmap = self.draw_pixmap.scaled(self.secondaryWindow_final.secWidth, self.secondaryWindow_final.secHeight,
+            scaled_pixmap = self.draw_pixmap.scaled(self.secondaryWindow_final.secWidth,
+                                                    self.secondaryWindow_final.secHeight,
                                                     Qt.IgnoreAspectRatio, Qt.FastTransformation)
 
             # apply homography transform
@@ -509,14 +494,14 @@ COLORS = [
     '#000000', '#00ff00', '#414168', '#3a7fa7', '#35e3e3', '#8fd970', '#5ebb49',
     '#458352', '#dcd37b', '#fffee5', '#ffd035', '#cc9245', '#a15c3e', '#a42f3b',
     '#f45b7a', '#c24998', '#81588d', '#bcb0c2', '#ffffff',
-    ]
+]
 
 
 class QPaletteButton(QtWidgets.QPushButton):
 
     def __init__(self, color):
         super().__init__()
-        self.setFixedSize(QtCore.QSize(24,24))
+        self.setFixedSize(QtCore.QSize(24, 24))
         self.color = color
         self.setStyleSheet("background-color: %s;" % color)
 

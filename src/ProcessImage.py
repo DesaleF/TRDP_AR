@@ -62,7 +62,7 @@ class PreProcessImages:
         print("STEP 2: Find contours of paper")
         cv2.drawContours(image, [rect], -1, (0, 0, 255), 2)
         cv2.imwrite("Outline.png", image)
-        return rect.reshape(4, 2) * ratio
+        return rect.reshape(4, 2) * ratio, image
 
         # Name:fourPointTransform()
         # works: No
@@ -79,7 +79,7 @@ class PreProcessImages:
 
         # obtain a consistent order of the points and unpack them individually
         if self.pts is None:
-            firstPts = self.getCorner(image)
+            firstPts, image_ = self.getCorner(image)
             self.pts = self.orderPoints(firstPts)
         (tl, tr, br, bl) = self.pts
 
