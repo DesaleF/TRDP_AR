@@ -49,6 +49,7 @@ class PreProcessImages:
             if len(approx) == 4:
                 rect = approx
                 cv2.drawContours(image, [rect], -1, (0, 255, 0), 2)
+                print(approx)
                 break
             else:
                 print(len(approx))
