@@ -49,8 +49,8 @@ class PreProcessImages:
             if len(approx) == 4:
                 rect = approx
                 cv2.drawContours(image, [rect], -1, (0, 255, 0), 2)
-                print(approx)
                 break
+            
             else:
                 print(len(approx))
                 cv2.drawContours(test_image, [approx], count, (0, 0, 255), 4)
@@ -60,7 +60,13 @@ class PreProcessImages:
 
         cv2.imwrite("Outline.png", image)
         cv2.imwrite("testOutline.png", test_image)
-        return rect.reshape(4, 2) * ratio
+        
+        # if box is not detected
+        if rect is None:
+            rect = np.load('rect.npy')
+        else:
+            rect = rect.reshape(4, 2) * ratio
+        return rect
 
     # Name:fourPointTransform()
     # works: No
@@ -130,10 +136,4 @@ class PreProcessImages:
         return rect
 
 
-''' [[[134  99]]
-
- [[131 378]]
-
- [[591 383]]
-
- [[594 110]]] '''
+''' [[[134,  99]], [[131, 378]], [[591, 383]], [[594, 110]]] '''
