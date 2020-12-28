@@ -50,7 +50,7 @@ class PreProcessImages:
                 rect = approx
                 cv2.drawContours(image, [rect], -1, (0, 255, 0), 2)
                 break
-            
+
             else:
                 print(len(approx))
                 cv2.drawContours(test_image, [approx], count, (0, 0, 255), 4)
@@ -60,12 +60,13 @@ class PreProcessImages:
 
         cv2.imwrite("Outline.png", image)
         cv2.imwrite("testOutline.png", test_image)
-        
+
         # if box is not detected
+        #     # rect = np.load('./src/rect.npy')
+        # else:
         if rect is None:
-            rect = np.load('rect.npy')
-        else:
-            rect = rect.reshape(4, 2) * ratio
+            rect = np.array([[[134,  99]], [[131, 378]], [[591, 383]], [[594, 110]]])
+        rect = rect.reshape(4, 2) * ratio
         return rect
 
     # Name:fourPointTransform()
@@ -82,9 +83,9 @@ class PreProcessImages:
 
         # obtain a consistent order of the points and unpack them individually
         if self.pts is None:
-            firstPts = self.getCorner(image)
-            self.pts = self.orderPoints(firstPts)
-        (tl, tr, br, bl) = self.pts
+            self.pts = self.getCorner(image)
+            self.pts = self.orderPoints(self.pts)
+        tl, tr, br, bl = self.pts
 
         # compute the width of the new image, which will be the maximum distance between bottom-right and bottom-left
         # x-coordinates or the top-right and top-left x-coordinates
@@ -131,7 +132,6 @@ class PreProcessImages:
         diff = np.diff(firstPts, axis=1)
         rect[1] = firstPts[np.argmin(diff)]
         rect[3] = firstPts[np.argmax(diff)]
-
         # return the ordered coordinates
         return rect
 

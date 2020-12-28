@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QMessageBox
 from PyQt5.QtWidgets import QDesktopWidget
 
 
@@ -32,6 +32,14 @@ class ProjectorWindow(QWidget):
         if QDesktopWidget.screenCount(QDesktopWidget()) > 1:
             monitor = QDesktopWidget().screenGeometry(1)
             self.move(monitor.left(), monitor.top())
+        else:
+            if not transparent:
+                msg = QMessageBox()
+                msg.setText('Projector Not detected. Thus the software will not work properly')
+
+                msg.setIcon(QMessageBox.Critical)
+                msg.setWindowTitle('Error')
+                msg.exec_()
         self.showMaximized()
         self.setWindowFlags(Qt.FramelessWindowHint)
 
