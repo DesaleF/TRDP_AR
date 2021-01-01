@@ -81,6 +81,7 @@ class PreProcessImages:
         # obtain a consistent order of the points and unpack them individually
         if self.pts is None:
             firstPts, image_ = self.getCorner(image)
+            print(firstPts)
             self.pts = self.orderPoints(firstPts)
         (tl, tr, br, bl) = self.pts
 
