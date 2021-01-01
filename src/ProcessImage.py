@@ -82,6 +82,7 @@ class PreProcessImages:
         if self.pts is None:
             firstPts, image_ = self.getCorner(image)
             print(firstPts)
+            print("This are the corners")
             self.pts = self.orderPoints(firstPts)
         (tl, tr, br, bl) = self.pts
 
