@@ -57,7 +57,8 @@ class PreProcessImages:
             # if contour has four points, then we can assume that we have found our screen
             if len(approx) == 4:
                 rect = approx
-
+            else:
+                rect = np.array([[268.8, 358.8][267.6, 357.6][266.4, 358.8][261.6, 352.8]])
         # save the contour (outline) of the projector screen
         print("STEP 2: Find contours of paper")
         cv2.drawContours(image, [rect], -1, (0, 0, 255), 2)
@@ -80,6 +81,8 @@ class PreProcessImages:
         # obtain a consistent order of the points and unpack them individually
         if self.pts is None:
             firstPts, image_ = self.getCorner(image)
+            print(firstPts)
+            print("This are the corners")
             self.pts = self.orderPoints(firstPts)
         (tl, tr, br, bl) = self.pts
 
