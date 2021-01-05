@@ -13,11 +13,12 @@ if __name__ == '__main__':
     algo = PreProcessImages()
 
     # wrapped image
-    wrapped = algo.fourPointTransform(img)
+    wrapped, image_i = algo.fourPointTransform(img)
 
     # rect, wrapped = algo.getCorner(img)
     cv2.imshow('Original Image', img)
     cv2.imshow('wrapped', wrapped)
+    cv2.imshow('Image Drawn', wrapped)
 
     if cv2.waitKey(0) & 0xff == 27:
         cv2.destroyAllWindows()

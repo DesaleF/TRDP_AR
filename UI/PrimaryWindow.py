@@ -154,16 +154,6 @@ class App(QMainWindow):
             print('error in function startVideo')
             print(expt)
 
-    def pauseDrawing(self):
-        """ stop both plotting and erasing """
-        if self.timer.isActive():
-            self.drawing = False
-            self.erase_flag = False
-            QApplication.setOverrideCursor(Qt.UpArrowCursor)
-
-        else:
-            self.videoLabel.setText('Camera is not started')
-
     def displayImage(self):
         """ This function read the camera and display the image
         """
@@ -171,23 +161,25 @@ class App(QMainWindow):
             # read form camera
             ret, image = self.cap.read()
             raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            wrapped = self.preProcessingTool.fourPointTransform(raw_image)
+            #wrapped = self.preProcessingTool.fourPointTransform(raw_image)
 
+            ##
             #  recreate the second window
             if self.is_secondWindow:
                 self.secondaryWindow.close()
                 self.secondaryWindow_final.show()
                 self.is_secondWindow = False
 
-            wrapped = cv2.resize(wrapped,
+            wrapped = cv2.resize(raw_image,
                                  (self.sizeObject.width() - self.imageOffsetX,
                                   self.sizeObject.height() - self.imageOffsetY))
+
             # get image info
             height, width, channel = wrapped.shape
             step = channel * width
 
             # create QImage and show it onto the label
-            qImg = QImage(wrapped.data, width, height, step, QImage.Format_RGB888)
+            qImg = QImage(raw_image, width, height, step, QImage.Format_RGB888)
             self.videoLabel.setPixmap(QPixmap.fromImage(qImg))
 
         except cv2.error as exc:
@@ -204,6 +196,16 @@ class App(QMainWindow):
 
             self.video_started = True
             self.videoLabel.setText('Camera is not connected')
+
+    def pauseDrawing(self):
+        """ stop both plotting and erasing """
+        if self.timer.isActive():
+            self.drawing = False
+            self.erase_flag = False
+            QApplication.setOverrideCursor(Qt.UpArrowCursor)
+
+        else:
+            self.videoLabel.setText('Camera is not started')
 
     def drawUsingPencil(self):
 

@@ -19,7 +19,7 @@ class LineDetector:
 
         hsv = cv2.cvtColor(input_image, cv2.COLOR_BGR2HSV)
 
-        mask = cv2.inRange(hsv, (30, 10, 0), (80, 255, 255))
+        mask = cv2.inRange(hsv, (10, 30, 0), (100, 255, 255))
 
         ## slice the green
         imask = mask > 0
@@ -46,8 +46,8 @@ class LineDetector:
         self.output_image = input_image
 
         # apply edge detection
-        low_threshold = 50
-        high_threshold = 200
+        low_threshold = 30
+        high_threshold = 150
         edges = cv2.Canny(np.uint8(self.input_image), low_threshold, high_threshold)
         kernel = np.ones((4, 4), np.uint8)
         dilated_edges = cv2.dilate(edges, kernel, iterations=1)
@@ -88,7 +88,7 @@ class LineDetector:
         return dilation
 
     def erode_edges(self, edges):
-        kernel = np.ones((1, 1), np.uint8)
+        kernel = np.ones((3, 3), np.uint8)
         erosion = cv2.erode(edges, kernel, iterations=1)
         return erosion
 

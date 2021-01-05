@@ -106,9 +106,10 @@ class PreProcessImages:
         # compute the perspective transform matrix, apply it and return the warped image
         M = cv2.getPerspectiveTransform(self.pts, dst)
         warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
-        return warped
+        return warped, image_
 
     def orderPoints(self, firstPts):
+
         """Put the detected corner points in meaningful order
         order = [top-left, top-right, bottom-right, bottom-left]
         :param
