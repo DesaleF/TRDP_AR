@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QMessageBox
 from PyQt5.QtWidgets import QDesktopWidget
+from src.utils.utils import *
 
 
 # this UI serve as image display window for projector
@@ -13,6 +14,7 @@ class ProjectorWindow(QWidget):
     This "window" is a QWidget. If it has no parent, it
     will appear as a free-floating window as we want.
     """
+
     def __init__(self, transparent):
         super(ProjectorWindow, self).__init__()
 
@@ -23,6 +25,7 @@ class ProjectorWindow(QWidget):
         # create transparent layout
         layout.addWidget(self.label)
         self.setLayout(layout)
+        self.Detected = True
 
         # self.setStyleSheet("background:white;")
         if transparent:
@@ -38,13 +41,9 @@ class ProjectorWindow(QWidget):
         else:
 
             if not transparent:
-                msg = QMessageBox()
-                msg.setText('Projector Not detected. Thus the software will not work properly')
-
-                msg.setIcon(QMessageBox.Critical)
-                msg.setWindowTitle('Error')
-                msg.exec_()
-
+                show_error_dialog("Projector Not detected. Thus the software will not work properly, ONLY , "
+                                  "main screen will be shown")
+                self.Detected = False
         self.showMaximized()
         self.setWindowFlags(Qt.FramelessWindowHint)
 
@@ -52,8 +51,8 @@ class ProjectorWindow(QWidget):
         for displayNr in range(QDesktopWidget().screenCount()):
             self.screen = QDesktopWidget().screenGeometry(displayNr)
 
-        self.secHeight = self.screen.height()-20
-        self.secWidth = self.screen.width()-20
+        self.secHeight = self.screen.height() - 20
+        self.secWidth = self.screen.width() - 20
         self.setMinimumSize(self.secWidth, self.secHeight)
 
         if not transparent:
@@ -66,3 +65,6 @@ class ProjectorWindow(QWidget):
 
             qImg = QImage(img.data, self.secWidth, self.secHeight, step, QImage.Format_RGB888)
             self.label.setPixmap(QPixmap.fromImage(qImg))
+
+    def get_status(self):
+        return self.Detected

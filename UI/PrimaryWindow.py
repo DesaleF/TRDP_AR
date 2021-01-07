@@ -46,6 +46,7 @@ class App(QMainWindow):
 
         # Objects
         self.secondaryWindow = ProjectorWindow(None)
+        self.check_projector = self.secondaryWindow.get_status()
         self.secondaryWindow_final = ProjectorWindow(self.secondTransparency)
         self.preProcessingTool = PreProcessImages()
         self.PreProcessImagesV2Tool = PreProcessImagesV2()
@@ -95,7 +96,9 @@ class App(QMainWindow):
 
         # create projector window
         self.show()
-        self.secondaryWindow.show()
+        # if camera detected show the projected window
+        if self.check_projector:
+            self.secondaryWindow.show()
 
     def finalUi(self, buttonGroup):
         """
