@@ -1,10 +1,4 @@
-'''
-    File name         : KalmanFilter.py
-    Description       : KalmanFilter class used for object tracking
-    Author            : Rahmad Sadli
-    Date created      : 20/02/2020
-    Python Version    : 3.7
-'''
+
 
 import numpy as np
 import matplotlib.pyplot as plt

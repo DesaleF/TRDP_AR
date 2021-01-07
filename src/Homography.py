@@ -17,14 +17,11 @@ def main():
     kp1, des1 = sift.detectAndCompute(img1, None)
     kp2, des2 = sift.detectAndCompute(img2, None)
 
-
 def opencv_matrix(loader, node):
     mapping = loader.construct_mapping(node)
     mat = np.array(mapping["data"])
     mat.resize(mapping["rows"], mapping["cols"])
     return mat
-
-
 
 def loading_using_sci():
     import scipy.io
