@@ -21,7 +21,6 @@ def getHomography():
 
     return H
 
-
 # apply image transform
 def getHomographyTransform(H, image):
     width = image.shape[0]
@@ -29,14 +28,3 @@ def getHomographyTransform(H, image):
     transformedImage = cv2.warpPerspective(image, H, (height, width))
     return transformedImage
 
-
-# put the following code into the mouseMoveEvent
-# apply homography transform
-# numpyImage = self.pixmapToArray(QPixmap(scaled_pixmap))
-# H = self.getHomography()
-# hImage = self.getHomographyTransform(H, numpyImage)
-#
-# # display the image
-# # secImage = QPixmap.fromImage(hTransformed)
-# image = QtGui.QImage(hImage, hImage.shape[1], hImage.shape[0], hImage.shape[1] * 3,QtGui.QImage.Format_RGB888)
-# pix = QtGui.QPixmap(image)
