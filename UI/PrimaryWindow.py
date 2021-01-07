@@ -26,7 +26,7 @@ class App(QMainWindow):
         self.title = 'PROJECTION AR'
         self.left = 300
         self.top = 100
-        self.camera = 0
+        self.camera = 2
 
         # offsets
         self.pointerOffsetX = 127
@@ -114,7 +114,6 @@ class App(QMainWindow):
 
         # set the layout to the button group
         colorVBox.setLayout(colorVLayout)
-
         gridLayout = QGridLayout()
 
         # add widgets to the layout

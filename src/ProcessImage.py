@@ -9,20 +9,19 @@ class PreProcessImages:
     def __init__(self):
         self.pts = None
 
-    def get_only_one_color(self, input_image):
-
+    @staticmethod
+    def get_only_one_color(input_image):
         hsv = cv2.cvtColor(input_image, cv2.COLOR_BGR2HSV)
-
         mask = cv2.inRange(hsv, (30, 10, 0), (80, 255, 255))
 
-        ## slice the green
+        # slice the green
         imask = mask > 0
         green = np.zeros_like(input_image, np.uint8)
         green[imask] = input_image[imask]
-
         return green
 
-    def getCorner(self, image):
+    @staticmethod
+    def getCorner(image):
         """
         This will extract  corners points
 
@@ -58,17 +57,13 @@ class PreProcessImages:
             if len(approx) == 4:
                 rect = approx
             else:
-                rect = np.array([[268.8, 358.8][267.6, 357.6][266.4, 358.8][261.6, 352.8]])
+                rect = np.array([[268.8, 358.8], [267.6, 357.6], [266.4, 358.8], [261.6, 352.8]])
+
         # save the contour (outline) of the projector screen
         print("STEP 2: Find contours of paper")
         cv2.drawContours(image, [rect], -1, (0, 0, 255), 2)
         cv2.imwrite("Outline.png", image)
         return rect.reshape(4, 2) * ratio, image
-
-        # Name:fourPointTransform()
-        # works: No
-        # TODO:
-        #   - obtain a consistent order of the points and unpack them individually
 
     def fourPointTransform(self, image):
         """It will transform the detected corner displayable image
@@ -108,7 +103,8 @@ class PreProcessImages:
         warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
         return warped
 
-    def orderPoints(self, firstPts):
+    @staticmethod
+    def orderPoints(firstPts):
         """Put the detected corner points in meaningful order
         order = [top-left, top-right, bottom-right, bottom-left]
         :param
