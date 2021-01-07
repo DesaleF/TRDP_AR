@@ -1,12 +1,10 @@
 import sys
-import cv2
-import numpy as np
 
 # pyqt modules
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import QTimer, Qt, QPoint, QRect, QSize
 from PyQt5.QtGui import QPixmap, QImage, QIcon, QPainter, QPen, QCursor
-from PyQt5.QtWidgets import QLabel, QMainWindow, QGridLayout, QApplication, QVBoxLayout, QGroupBox, QMessageBox
+from PyQt5.QtWidgets import QLabel, QMainWindow, QGridLayout, QApplication, QVBoxLayout, QGroupBox
 
 # our modules
 from UI.projectorWindow import ProjectorWindow
@@ -15,8 +13,7 @@ from src.ProcessImage import PreProcessImages as PreProcessImagesV2
 
 from UI.Menus import AppMenu
 from UI.SideBar import SideBar
-from src.config.config import *
-from src.KalmanFilter import *
+from src.kalman.KalmanFilter import *
 from src.utils.utils import *
 
 KF = KalmanFilter(0.1, 1, 1, 1, 0.1, 0.1)

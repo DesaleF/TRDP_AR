@@ -1,7 +1,7 @@
 import cv2
 
 # Pointer offsets
-OFFSET_y = 10
+OFFSET_y = 66
 OFFSET_x = 127
 
 # image offsets

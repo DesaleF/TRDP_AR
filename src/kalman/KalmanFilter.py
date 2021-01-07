@@ -1,7 +1,8 @@
 """
     File name         : KalmanFilter.py
     Description       : KalmanFilter class used for object tracking
-    Code from :        "https://machinelearningspace.com/object-tracking-python/"
+    Code borrowed from :        "https://machinelearningspace.com/object-tracking-python/"
+
 """
 
 import numpy as np
