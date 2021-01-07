@@ -65,7 +65,7 @@ class PreProcessImages:
         cv2.imwrite("Outline.png", image)
         return rect.reshape(4, 2) * ratio, image
 
-    def fourPointTransform(self, image):
+    def HomographyTransform(self, image):
         """It will transform the detected corner displayable image
         :param
             - image: the full sized image

@@ -14,24 +14,18 @@ from src.Preprocess import PreProcessImages
 
 from UI.Menus import AppMenu
 from UI.SideBar import SideBar
+from src.config.config import *
 
 
 class App(QMainWindow):
-    def __init__(self):
+    def __init__(self, title="PROJECTION AR", left_corner=300, top_corner=100):
         super(App, self).__init__()
 
         # set main window attributes
-        self.title = 'PROJECTION AR'
-        self.left = 300
-        self.top = 100
+        self.title = title
+        self.left = left_corner
+        self.top = top_corner
         self.camera = 2
-
-        # offsets
-        self.pointerOffsetX = 127
-        self.pointerOffsetY = 63
-
-        self.imageOffsetX = 250
-        self.imageOffsetY = 200
 
         self.sizeObject = QtWidgets.QDesktopWidget().screenGeometry(-1)
         self.bold_font = QtGui.QFont("Times", 10, QtGui.QFont.Bold)
@@ -49,6 +43,8 @@ class App(QMainWindow):
         self.secondaryWindow_final = ProjectorWindow(self.secondTransparency)
         self.preProcessingTool = PreProcessImages()
 
+        self.PreProcessImagesV2Tool = PreProcessImagesV2()
+
         # extra parameters
         self.timer = QTimer()
         self.cap = None
@@ -56,15 +52,15 @@ class App(QMainWindow):
         self.cursor = None
 
         # variable for annotation
-        self.draw_pixmap = QPixmap(self.sizeObject.width() - self.imageOffsetX,
-                                   self.sizeObject.height() - self.imageOffsetY)
+        self.draw_pixmap = QPixmap(self.sizeObject.width() - OFFSET_IMAGE_X,
+                                   self.sizeObject.height() - OFFSET_IMAGE_Y)
         self.draw_pixmap.fill(Qt.transparent)
 
         self.painter = QPainter(self.draw_pixmap)
         self.annotation_label = QLabel(self)
         self.videoLabel = QLabel("Start Video", self)
 
-        # custom drawing variables
+        # custom drawing variables WILL BE UPDATED LATER
         self.drawing = False
         self.brushSize = 6
         self.clear_size = 20
@@ -179,7 +175,7 @@ class App(QMainWindow):
             # read form camera
             ret, image = self.cap.read()
             raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            wrapped = self.preProcessingTool.fourPointTransform(raw_image)
+            wrapped = self.preProcessingTool.HomographyTransform(raw_image)
             # wrapped = raw_image
             #  recreate the second window
             if self.is_secondWindow:
@@ -188,8 +184,8 @@ class App(QMainWindow):
                 self.is_secondWindow = False
 
             wrapped = cv2.resize(wrapped,
-                                 (self.sizeObject.width() - self.imageOffsetX,
-                                  self.sizeObject.height() - self.imageOffsetY))
+                                 (self.sizeObject.width() - OFFSET_IMAGE_X,
+                                  self.sizeObject.height() - OFFSET_IMAGE_Y))
             # get image info
             height, width, channel = wrapped.shape
             step = channel * width
@@ -272,8 +268,8 @@ class App(QMainWindow):
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton and self.video_started:
             self.lastPoint = event.pos()
-            self.lastPoint.setX(self.lastPoint.x() - self.pointerOffsetX)
-            self.lastPoint.setY(self.lastPoint.y() - self.pointerOffsetY)
+            self.lastPoint.setX(self.lastPoint.x() -OFFSET_x)
+            self.lastPoint.setY(self.lastPoint.y() - OFFSET_y)
 
     # mouseMoveEvent(self, event)
     # Works: yes
@@ -283,8 +279,8 @@ class App(QMainWindow):
         if (event.buttons() & Qt.LeftButton) and self.rect().contains(event.pos()):
             self.painter.setOpacity(0.9)
             currentPoint = event.pos()
-            currentPoint.setX(currentPoint.x() - self.pointerOffsetX)
-            currentPoint.setY(currentPoint.y() - self.pointerOffsetY)
+            currentPoint.setX(currentPoint.x() -OFFSET_x)
+            currentPoint.setY(currentPoint.y() - OFFSET_y)
 
             # drawing annotation
             if self.drawing:
@@ -316,7 +312,6 @@ class App(QMainWindow):
     # highlight
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton and self.video_started:
-
             # self.drawing = False
             self.save()
 

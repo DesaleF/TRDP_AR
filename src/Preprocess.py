@@ -61,11 +61,11 @@ class PreProcessImages:
         rect = rect.reshape(4, 2) * ratio
         return rect
 
-    # Name:fourPointTransform()
-    # works: No
+    # Name:HomographyTransform()
+    # works: Yes
     # TODO:
     #   - obtain a consistent order of the points and unpack them individually
-    def fourPointTransform(self, image):
+    def HomographyTransform(self, image):
         """It will transform the detected corner displayable image
         :param
             - image: the full sized image
@@ -102,7 +102,7 @@ class PreProcessImages:
         return warped
 
     # Name:orderPoints()
-    # works: No
+    # works: Yes
     # TODO:
     #   - order the points in the way we want to transform the points
     def orderPoints(self, firstPts):
@@ -127,5 +127,3 @@ class PreProcessImages:
         # return the ordered coordinates
         return rect
 
-
-''' [[[134,  99]], [[131, 378]], [[591, 383]], [[594, 110]]] '''
