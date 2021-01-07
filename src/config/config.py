@@ -1,3 +1,5 @@
+import cv2
+
 # Pointer offsets
 OFFSET_y = 10
 OFFSET_x = 127
@@ -7,7 +9,7 @@ OFFSET_IMAGE_X = 250
 OFFSET_IMAGE_Y = 200
 
 # flags
-CAMERA = 2
+CAMERA = [3, 1, 0, 2]
 VIDEO_STARTED = False
 PENCIL_STARTED = False
 ERASE_FLAG = False
@@ -21,4 +23,5 @@ CURSOR = None
 BRUSH_SIZE = 6
 CLEAR_SIZE = 20
 DRAWING = False
+
 

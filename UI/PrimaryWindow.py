@@ -17,6 +17,7 @@ from UI.Menus import AppMenu
 from UI.SideBar import SideBar
 from src.config.config import *
 from src.KalmanFilter import *
+from src.utils.utils import *
 
 
 # noinspection PyBroadException
@@ -138,14 +139,11 @@ class App(QMainWindow):
     def startVideo(self):
         """  This will start the camera feed """
         try:
-            # if timer is stopped
-            src = [0, 2, 3]
 
             if not self.timer.isActive():
-
-                self.cap = cv2.VideoCapture(self.camera)
-
-                if not(self.cap is None or not self.cap.isOpened()):
+                self.cap, statu = detect_camera()
+                print(self.cap, statu)
+                if statu:
                     self.videoLabel.setText("Connecting to camera")
                     self.video_started = True
 
@@ -153,16 +151,11 @@ class App(QMainWindow):
                     self.timer.timeout.connect(self.displayImage)
                     self.timer.start(100)
                 else:
-                    msg = QMessageBox()
-                    msg.setText('No webcam or attached camera detected , please plugin or close your webcam if it is open')
-
-                    msg.setIcon(QMessageBox.Critical)
-                    msg.setWindowTitle('Error')
-                    msg.exec_()
-
+                    print("Here")
+                    show_error_dialog("No camera detected, or your camera is being used by another program, please "
+                                      "check your camera")
         except Exception as expt:
-            print('error in function startVideo')
-            print(expt)
+            show_error_dialog("Unable to start video, make sure your camera is working")
 
     def pauseDrawing(self):
         """ stop both plotting and erasing """
@@ -248,21 +241,6 @@ class App(QMainWindow):
         if files:
             self.filePath = files[0]
             # go ahead and read the file if necessary
-
-    @staticmethod
-    def pixmapToArray(pixmap):
-        # Get the size of the current pixmap
-        size = pixmap.size()
-        h = size.width()
-        w = size.height()
-        channels_count = 4
-
-        # Get the QImage Item and convert it to a byte string
-        qImg = pixmap.toImage()
-        s = qImg.bits().asstring(w * h * channels_count)
-        img = np.fromstring(s, dtype=np.uint8).reshape((w, h, channels_count))
-
-        return img
 
     # normal application exit
     def exitApp(self):
