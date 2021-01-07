@@ -19,12 +19,15 @@ from src.config.config import *
 from src.KalmanFilter import *
 from src.utils.utils import *
 
+KF = KalmanFilter(0.1, 1, 1, 1, 0.1, 0.1)
+
 
 # noinspection PyBroadException
 class App(QMainWindow):
     """ Creates the instance of generic ui
 
     """
+
     def __init__(self, title="PROJECTION AR", left_corner=300, top_corner=100):
         super(App, self).__init__()
 
@@ -50,7 +53,6 @@ class App(QMainWindow):
         self.secondaryWindow_final = ProjectorWindow(self.secondTransparency)
         self.preProcessingTool = PreProcessImages()
         self.PreProcessImagesV2Tool = PreProcessImagesV2()
-        self.K = KalmanFilter(0.1, 1, 1, 1, 0.1,0.1)
 
         # extra parameters set in config.py for clarity
         self.timer = QTimer()
@@ -175,6 +177,10 @@ class App(QMainWindow):
             # read form camera
             ret, image = self.cap.read()
             raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+            # Predict
+            # (x, y) = self.KF.predict()
+
             if self.check_projector:
                 wrapped = self.preProcessingTool.HomographyTransform(raw_image)
             else:
@@ -198,14 +204,7 @@ class App(QMainWindow):
             self.videoLabel.setPixmap(QPixmap.fromImage(qImg))
 
         except cv2.error as exc:
-            print(exc)
-            msg = QMessageBox()
-            msg.setText('No camera is detected')
-
-            msg.setIcon(QMessageBox.Critical)
-            msg.setWindowTitle('Error')
-            msg.exec_()
-
+            show_error_dialog(exc)
             self.timer.stop()
             self.timer.disconnect()
 
@@ -256,7 +255,7 @@ class App(QMainWindow):
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton and self.video_started:
             self.lastPoint = event.pos()
-            self.lastPoint.setX(self.lastPoint.x() -OFFSET_x)
+            self.lastPoint.setX(self.lastPoint.x() - OFFSET_x)
             self.lastPoint.setY(self.lastPoint.y() - OFFSET_y)
 
     # mouseMoveEvent(self, event)
@@ -267,7 +266,7 @@ class App(QMainWindow):
         if (event.buttons() & Qt.LeftButton) and self.rect().contains(event.pos()):
             self.painter.setOpacity(0.9)
             currentPoint = event.pos()
-            currentPoint.setX(currentPoint.x() -OFFSET_x)
+            currentPoint.setX(currentPoint.x() - OFFSET_x)
             currentPoint.setY(currentPoint.y() - OFFSET_y)
 
             # drawing annotation
@@ -309,14 +308,6 @@ class App(QMainWindow):
             self.draw_pixmap.save(filePath)
         except Exception as ex:
             pass
-
-
-COLORS = [
-    # 17 undertones https://lospec.com/palette-list/17undertones
-    '#000000', '#00ff00', '#414168', '#3a7fa7', '#35e3e3', '#8fd970', '#5ebb49',
-    '#458352', '#dcd37b', '#ffd035', '#cc9245', '#a15c3e', '#a42f3b',
-    '#f45b7a', '#c24998', '#81588d', '#bcb0c2', '#ffffff',
-]
 
 
 class QPaletteButton(QtWidgets.QPushButton):

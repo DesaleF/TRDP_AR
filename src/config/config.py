@@ -25,3 +25,11 @@ CLEAR_SIZE = 20
 DRAWING = False
 
 
+COLORS = [
+    # 17 undertones https://lospec.com/palette-list/17undertones
+    '#000000', '#00ff00', '#414168', '#3a7fa7', '#35e3e3', '#8fd970', '#5ebb49',
+    '#458352', '#dcd37b', '#ffd035', '#cc9245', '#a15c3e', '#a42f3b',
+    '#f45b7a', '#c24998', '#81588d', '#bcb0c2', '#ffffff',
+]
+
+
