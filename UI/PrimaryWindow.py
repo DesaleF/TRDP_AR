@@ -165,7 +165,7 @@ class App(QMainWindow):
             # read form camera
             ret, image = self.cap.read()
             raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            wrapped = self.preProcessingTool.fourPointTransform(raw_image)
+            wrapped = self.preProcessingTool.HomographyTransform(raw_image)
             # wrapped = raw_image
             #  recreate the second window
             if self.is_secondWindow:
