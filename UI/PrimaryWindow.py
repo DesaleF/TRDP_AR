@@ -11,13 +11,11 @@ from PyQt5.QtWidgets import QLabel, QMainWindow, QGridLayout, QApplication, QVBo
 # our modules
 from UI.projectorWindow import ProjectorWindow
 from src.Preprocess import PreProcessImages
-from src.ProcessImage import PreProcessImages as PreProcessImagesV2
 
 from UI.Menus import AppMenu
 from UI.SideBar import SideBar
 
 
-# noinspection PyBroadException
 class App(QMainWindow):
     def __init__(self):
         super(App, self).__init__()
@@ -41,6 +39,7 @@ class App(QMainWindow):
         # Flags
         self.video_started = False
         self.pencil_started = False
+
         self.erase_flag = False
         self.is_secondWindow = True
         self.secondTransparency = True
@@ -49,7 +48,6 @@ class App(QMainWindow):
         self.secondaryWindow = ProjectorWindow(None)
         self.secondaryWindow_final = ProjectorWindow(self.secondTransparency)
         self.preProcessingTool = PreProcessImages()
-        self.PreProcessImagesV2Tool = PreProcessImagesV2()
 
         # extra parameters
         self.timer = QTimer()
@@ -61,6 +59,7 @@ class App(QMainWindow):
         self.draw_pixmap = QPixmap(self.sizeObject.width() - self.imageOffsetX,
                                    self.sizeObject.height() - self.imageOffsetY)
         self.draw_pixmap.fill(Qt.transparent)
+
         self.painter = QPainter(self.draw_pixmap)
         self.annotation_label = QLabel(self)
         self.videoLabel = QLabel("Start Video", self)
@@ -84,23 +83,23 @@ class App(QMainWindow):
         self.buildUI()
 
     def buildUI(self):
+        """  This will start the both primary window and projector window
         """
-
-        """
-        # window location and title
+        # set some attribute of the window such as title and icon
         self.setWindowTitle(self.title)
-        # self.setGeometry(self.left, self.top, self.width(), self.height())
         self.setWindowIcon(QIcon("./assets/icons/icon-green.png"))
         self.showMaximized()
 
-        # create projector window
+        # create primary and projector window
         self.show()
         self.secondaryWindow.show()
 
     def finalUi(self, buttonGroup):
+        """ This will put user interface component together
+        :param
+            buttonGroup - button groups to be placed on the side of the window
         """
 
-        """
         # button group box
         colorVBox = QGroupBox("Colors")
         colorVBox.setFixedWidth(45)
@@ -112,7 +111,7 @@ class App(QMainWindow):
         colorVLayout.setContentsMargins(0, 0, 0, 0)
         self.add_palette_buttons(colorVLayout)
 
-        # set the layout to the button group
+        # add color selector the box
         colorVBox.setLayout(colorVLayout)
         gridLayout = QGridLayout()
 
@@ -128,12 +127,21 @@ class App(QMainWindow):
         wid.setLayout(gridLayout)
 
     def add_palette_buttons(self, layout):
+        """ This will put all the color in a QPlatteButton
+        :param
+            -layout - a layout box to place the QPaletteButton
+        """
+
         for c in COLORS:
             b = QPaletteButton(c)
             b.pressed.connect(lambda clr=c: self.set_pen_color(clr))
             layout.addWidget(b)
 
     def set_pen_color(self, c):
+        """ This will set the pen color
+        :param
+            c - color to be set for the pen
+        """
         self.brushColor = QtGui.QColor(c)
 
     def startVideo(self):

@@ -5,9 +5,8 @@ from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QMessageBox
 from PyQt5.QtWidgets import QDesktopWidget
 
 
-# this UI serve as image display window for projector
+# This UI serve as image display window for projector
 # TODO:
-#   - Draw Colored Border on image label
 class ProjectorWindow(QWidget):
     """
     This "window" is a QWidget. If it has no parent, it
