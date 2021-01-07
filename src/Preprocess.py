@@ -2,7 +2,6 @@ import cv2
 import imutils
 import numpy as np
 
-
 #  this class is important to preprocess the image before displaying on labels
 # for example perspective transform of the image from the projector
 class PreProcessImages:
@@ -111,6 +110,7 @@ class PreProcessImages:
 
     # Name:orderPoints()
     # works: No
+
     # TODO:
     #   - order the points in the way we want to transform the points
     def orderPoints(self, firstPts):

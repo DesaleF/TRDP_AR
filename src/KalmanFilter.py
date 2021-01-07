@@ -1,13 +1,9 @@
-'''
+"""
     File name         : KalmanFilter.py
     Description       : KalmanFilter class used for object tracking
-    Author            : Rahmad Sadli
-    Date created      : 20/02/2020
-    Python Version    : 3.7
-'''
+"""
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 class KalmanFilter(object):
@@ -60,7 +56,6 @@ class KalmanFilter(object):
         self.P = np.eye(self.A.shape[1])
 
     def predict(self):
-
         # Update time state
         # x_k =Ax_(k-1) + Bu_(k-1)     Eq.(9)
         self.x = np.dot(self.A, self.x) + np.dot(self.B, self.u)
@@ -71,7 +66,6 @@ class KalmanFilter(object):
         return self.x[0:2]
 
     def update(self, z):
-
         # S = H*P*H'+R
         S = np.dot(self.H, np.dot(self.P, self.H.T)) + self.R
 
