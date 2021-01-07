@@ -21,6 +21,9 @@ from src.KalmanFilter import *
 
 # noinspection PyBroadException
 class App(QMainWindow):
+    """ Creates the instance of generic ui
+
+    """
     def __init__(self, title="PROJECTION AR", left_corner=300, top_corner=100):
         super(App, self).__init__()
 
@@ -28,17 +31,17 @@ class App(QMainWindow):
         self.title = title
         self.left = left_corner
         self.top = top_corner
-        self.camera = 2
+        self.camera = CAMERA
 
         self.sizeObject = QtWidgets.QDesktopWidget().screenGeometry(-1)
         self.bold_font = QtGui.QFont("Times", 10, QtGui.QFont.Bold)
 
-        # Flags
-        self.video_started = False
-        self.pencil_started = False
-        self.erase_flag = False
-        self.is_secondWindow = True
-        self.secondTransparency = True
+        # Flags started to constants in config.py
+        self.video_started = VIDEO_STARTED
+        self.pencil_started = PENCIL_STARTED
+        self.erase_flag = ERASE_FLAG
+        self.is_secondWindow = IS_SECONDWINDOW
+        self.secondTransparency = SECOND_WINDOW_TRANSPARENT
 
         # Objects
         self.secondaryWindow = ProjectorWindow(None)
@@ -47,11 +50,11 @@ class App(QMainWindow):
         self.PreProcessImagesV2Tool = PreProcessImagesV2()
         self.K = KalmanFilter(0.1, 1, 1, 1, 0.1,0.1)
 
-        # extra parameters
+        # extra parameters set in config.py for clarity
         self.timer = QTimer()
-        self.cap = None
-        self.filePath = None
-        self.cursor = None
+        self.cap = CAP
+        self.filePath = PATH
+        self.cursor = CURSOR
 
         # variable for annotation
         self.draw_pixmap = QPixmap(self.sizeObject.width() - OFFSET_IMAGE_X,
@@ -62,9 +65,9 @@ class App(QMainWindow):
         self.videoLabel = QLabel("Start Video", self)
 
         # custom drawing variables WILL BE UPDATED LATER
-        self.drawing = False
-        self.brushSize = 6
-        self.clear_size = 20
+        self.drawing = DRAWING
+        self.brushSize = BRUSH_SIZE
+        self.clear_size = CLEAR_SIZE
         self.brushColor = Qt.green
         self.lastPoint = QPoint()
 
