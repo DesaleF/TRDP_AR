@@ -28,7 +28,7 @@ class App(QMainWindow):
         self.camera = 0
 
         # offsets
-        self.pointerOffsetX = 123
+        self.pointerOffsetX = 127
         self.pointerOffsetY = 63
 
         self.imageOffsetX = 250
@@ -172,7 +172,7 @@ class App(QMainWindow):
             ret, image = self.cap.read()
             raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             wrapped = self.preProcessingTool.fourPointTransform(raw_image)
-
+            # wrapped = raw_image
             #  recreate the second window
             if self.is_secondWindow:
                 self.secondaryWindow.close()
@@ -202,7 +202,8 @@ class App(QMainWindow):
             self.timer.stop()
             self.timer.disconnect()
 
-            self.video_started = True
+            self.video_started = False
+            self.drawing = False
             self.videoLabel.setText('Camera is not connected')
 
     def drawUsingPencil(self):
@@ -238,7 +239,8 @@ class App(QMainWindow):
             self.filePath = files[0]
             # go ahead and read the file if necessary
 
-    def pixmapToArray(self, pixmap):
+    @staticmethod
+    def pixmapToArray(pixmap):
         # Get the size of the current pixmap
         size = pixmap.size()
         h = size.width()
@@ -292,7 +294,7 @@ class App(QMainWindow):
                 self.painter.restore()
 
             # set drawn annotation to the label and save last point
-            self.annotation_label.setPixmap(self.draw_pixmap)
+            # self.annotation_label.setPixmap(self.draw_pixmap)
             self.lastPoint = currentPoint
 
             # update the paint in both screens

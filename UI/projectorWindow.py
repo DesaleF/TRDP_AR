@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QMessageBox
 from PyQt5.QtWidgets import QDesktopWidget
 
@@ -46,7 +47,17 @@ class ProjectorWindow(QWidget):
         # to get the screen size
         for displayNr in range(QDesktopWidget().screenCount()):
             self.screen = QDesktopWidget().screenGeometry(displayNr)
-        self.secHeight = self.screen.height()-40
-        self.secWidth = self.screen.width()-40
+        self.secHeight = self.screen.height()-20
+        self.secWidth = self.screen.width()-20
         self.setMinimumSize(self.secWidth, self.secHeight)
 
+        if not transparent:
+            filename = './assets/models/Rectangle.png'
+            dim = (self.secWidth, self.secHeight)
+
+            img = cv2.resize(cv2.imread(filename), dim)
+            _, _, channel = img.shape
+            step = channel * self.secWidth
+
+            qImg = QImage(img.data, self.secWidth, self.secHeight, step, QImage.Format_RGB888)
+            self.label.setPixmap(QPixmap.fromImage(qImg))
