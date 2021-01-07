@@ -3,7 +3,7 @@ import imutils
 import numpy as np
 
 
-#  this class is important to preprocess the image before displaying on labels
+# this class is important to preprocess the image before displaying on labels
 # for example perspective transform of the image from the projector
 class PreProcessImages:
     def __init__(self):
