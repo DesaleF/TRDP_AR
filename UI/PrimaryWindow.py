@@ -15,7 +15,8 @@ from src.ProcessImage import PreProcessImages as PreProcessImagesV2
 
 from UI.Menus import AppMenu
 from UI.SideBar import SideBar
-from  src.config.config import *
+from src.config.config import *
+from src.KalmanFilter import *
 
 
 # noinspection PyBroadException
@@ -44,6 +45,7 @@ class App(QMainWindow):
         self.secondaryWindow_final = ProjectorWindow(self.secondTransparency)
         self.preProcessingTool = PreProcessImages()
         self.PreProcessImagesV2Tool = PreProcessImagesV2()
+        self.K = KalmanFilter(0.1, 1, 1, 1, 0.1,0.1)
 
         # extra parameters
         self.timer = QTimer()
