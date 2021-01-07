@@ -263,7 +263,7 @@ class App(QMainWindow):
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton and self.video_started:
             self.lastPoint = event.pos()
-            self.lastPoint.setX(self.lastPoint.x() -OFFSET_x)
+            self.lastPoint.setX(self.lastPoint.x() - OFFSET_x)
             self.lastPoint.setY(self.lastPoint.y() - OFFSET_y)
 
     # mouseMoveEvent(self, event)
@@ -274,7 +274,7 @@ class App(QMainWindow):
         if (event.buttons() & Qt.LeftButton) and self.rect().contains(event.pos()):
             self.painter.setOpacity(0.9)
             currentPoint = event.pos()
-            currentPoint.setX(currentPoint.x() -OFFSET_x)
+            currentPoint.setX(currentPoint.x() - OFFSET_x)
             currentPoint.setY(currentPoint.y() - OFFSET_y)
 
             # drawing annotation

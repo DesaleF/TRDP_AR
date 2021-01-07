@@ -1,6 +1,6 @@
 # Pointer offsets
-OFFSET_y = 10
-OFFSET_x = 127
+OFFSET_y = 66
+OFFSET_x = 123
 
 # image offsets
 OFFSET_IMAGE_X = 250
