@@ -11,7 +11,12 @@ if __name__ == '__main__':
         ex.show()
         sys.exit(app.exec_())
     except Exception as ex:
-        print(ex)
+        print("================================")
+        print("Appplication couldn't start.")
+        print("Error:" + ex)
+        print("================================")
+
+
 
 
 

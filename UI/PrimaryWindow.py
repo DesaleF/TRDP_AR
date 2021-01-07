@@ -18,11 +18,11 @@ from UI.SideBar import SideBar
 
 
 class App(QMainWindow):
-    def __init__(self):
+    def __init__(self, app_title='PROJECTION AR', camera=0, ):
         super(App, self).__init__()
 
         # set main window attributes
-        self.title = 'PROJECTION AR'
+        self.title = app_title
         self.left = 300
         self.top = 100
         self.camera = 0
@@ -161,7 +161,7 @@ class App(QMainWindow):
             # read form camera
             ret, image = self.cap.read()
             raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            #wrapped = self.preProcessingTool.fourPointTransform(raw_image)
+            # wrapped = self.preProcessingTool.fourPointTransform(raw_image)
 
             ##
             #  recreate the second window
