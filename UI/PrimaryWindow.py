@@ -17,6 +17,7 @@ from UI.Menus import AppMenu
 from UI.SideBar import SideBar
 
 
+# noinspection PyBroadException
 class App(QMainWindow):
     def __init__(self):
         super(App, self).__init__()
@@ -308,6 +309,7 @@ class App(QMainWindow):
     # highlight
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton and self.video_started:
+
             # self.drawing = False
             self.save()
 
@@ -316,7 +318,7 @@ class App(QMainWindow):
             filePath = 'annotation.png'
             self.draw_pixmap.save(filePath)
         except Exception as ex:
-            print(ex)
+            pass
 
 
 COLORS = [

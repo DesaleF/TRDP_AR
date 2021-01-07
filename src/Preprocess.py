@@ -55,17 +55,9 @@ class PreProcessImages:
                 print(len(approx))
                 cv2.drawContours(test_image, [approx], count, (0, 0, 255), 4)
 
-        # save the contour (outline) of the projector screen
-        # print("STEP 2: Find contours of paper")
-
-        cv2.imwrite("Outline.png", image)
-        cv2.imwrite("testOutline.png", test_image)
-
-        # if box is not detected
-        #     # rect = np.load('./src/rect.npy')
-        # else:
         if rect is None:
             rect = np.array([[[134,  99]], [[131, 378]], [[591, 383]], [[594, 110]]])
+
         rect = rect.reshape(4, 2) * ratio
         return rect
 
