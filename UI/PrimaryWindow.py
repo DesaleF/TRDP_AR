@@ -178,9 +178,8 @@ class App(QMainWindow):
             ret, image = self.cap.read()
             raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-            # Predict
-            # (x, y) = self.KF.predict()
-
+            # Predict using kalman filter
+            (x, y) = self.KF.predict()
             if self.check_projector:
                 wrapped = self.preProcessingTool.HomographyTransform(raw_image)
             else:
