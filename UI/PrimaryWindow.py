@@ -84,10 +84,9 @@ class App(QMainWindow):
         self.buildUI()
 
     def buildUI(self):
+        """ This will show the window
         """
-
-        """
-        # window location and title
+        # set some attributes of the window such as title
         self.setWindowTitle(self.title)
         # self.setGeometry(self.left, self.top, self.width(), self.height())
         self.setWindowIcon(QIcon("./assets/icons/icon-green.png"))
@@ -98,8 +97,9 @@ class App(QMainWindow):
         self.secondaryWindow.show()
 
     def finalUi(self, buttonGroup):
-        """
-
+        """ This will put together all the components into the window
+            :param
+                -buttonGroup - group of buttons to but placed on the side of the window
         """
         # button group box
         colorVBox = QGroupBox("Colors")
