@@ -12,5 +12,6 @@ if __name__ == '__main__':
         sys.exit(app.exec_())
     except ModuleNotFoundError:
         show_error_dialog("Module Not found" + ModuleNotFoundError.__name__)
+        print("Please install some modules such us opencv and pyqt5")
     except Exception as general_exception:
         show_error_dialog(general_exception)
