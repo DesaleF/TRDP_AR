@@ -145,7 +145,6 @@ class App(QMainWindow):
 
             if not self.timer.isActive():
                 self.cap, statu = detect_camera()
-                print(self.cap, statu)
                 if statu:
                     self.videoLabel.setText("Connecting to camera")
                     self.video_started = True
@@ -154,7 +153,6 @@ class App(QMainWindow):
                     self.timer.timeout.connect(self.displayImage)
                     self.timer.start(100)
                 else:
-                    print("Here")
                     show_error_dialog("No camera detected, or your camera is being used by another program, please "
                                       "check your camera")
         except Exception as expt:
@@ -177,10 +175,13 @@ class App(QMainWindow):
             # read form camera
             ret, image = self.cap.read()
             raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            wrapped = self.preProcessingTool.HomographyTransform(raw_image)
+            if self.check_projector:
+                wrapped = self.preProcessingTool.HomographyTransform(raw_image)
+            else:
+                wrapped = raw_image
             # wrapped = raw_image
             #  recreate the second window
-            if self.is_secondWindow:
+            if self.is_secondWindow and self.check_projector:
                 self.secondaryWindow.close()
                 self.secondaryWindow_final.show()
                 self.is_secondWindow = False

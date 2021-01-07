@@ -9,7 +9,7 @@ OFFSET_IMAGE_X = 250
 OFFSET_IMAGE_Y = 200
 
 # flags
-CAMERA = [3, 1, 0, 2]
+CAMERA = [0, 1, 2, 3]
 VIDEO_STARTED = False
 PENCIL_STARTED = False
 ERASE_FLAG = False
