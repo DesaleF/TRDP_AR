@@ -15,7 +15,7 @@ class ProjectorWindow(QWidget):
     will appear as a free-floating window as we want.
     """
     def __init__(self, transparent):
-        super().__init__()
+        super(ProjectorWindow, self).__init__()
         layout = QVBoxLayout()
         self.label = QLabel("Secondary Window")
         self.label.setStyleSheet("background:transparent;")
