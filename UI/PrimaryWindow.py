@@ -295,7 +295,7 @@ class App(QMainWindow):
                 self.painter.restore()
 
             # set drawn annotation to the label and save last point
-            # self.annotation_label.setPixmap(self.draw_pixmap)
+            self.annotation_label.setPixmap(self.draw_pixmap)
             self.lastPoint = currentPoint
 
             # update the paint in both screens
