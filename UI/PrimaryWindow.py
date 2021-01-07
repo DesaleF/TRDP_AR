@@ -24,6 +24,7 @@ class App(QMainWindow):
     """ Creates the instance of generic ui
 
     """
+
     def __init__(self, title="PROJECTION AR", left_corner=300, top_corner=100):
         super(App, self).__init__()
 
@@ -48,7 +49,7 @@ class App(QMainWindow):
         self.secondaryWindow_final = ProjectorWindow(self.secondTransparency)
         self.preProcessingTool = PreProcessImages()
         self.PreProcessImagesV2Tool = PreProcessImagesV2()
-        self.K = KalmanFilter(0.1, 1, 1, 1, 0.1,0.1)
+        self.K = KalmanFilter(0.1, 1, 1, 1, 0.1, 0.1)
 
         # extra parameters set in config.py for clarity
         self.timer = QTimer()
@@ -266,9 +267,7 @@ class App(QMainWindow):
             self.lastPoint.setX(self.lastPoint.x() - OFFSET_x)
             self.lastPoint.setY(self.lastPoint.y() - OFFSET_y)
 
-    # mouseMoveEvent(self, event)
-    # Works: yes
-    # TODO:
+    # during annotation drawing, mouse movement event is used
     def mouseMoveEvent(self, event):
 
         if (event.buttons() & Qt.LeftButton) and self.rect().contains(event.pos()):
@@ -304,10 +303,9 @@ class App(QMainWindow):
             self.secondaryWindow_final.label.setPixmap(scaled_pixmap)
             self.update()
 
-    # highlight
+    # on mouse release event after drawing annotation this will save the annotation
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton and self.video_started:
-            # self.drawing = False
             self.save()
 
     def save(self):
@@ -318,18 +316,11 @@ class App(QMainWindow):
             pass
 
 
-COLORS = [
-    # 17 undertones https://lospec.com/palette-list/17undertones
-    '#000000', '#00ff00', '#414168', '#3a7fa7', '#35e3e3', '#8fd970', '#5ebb49',
-    '#458352', '#dcd37b', '#ffd035', '#cc9245', '#a15c3e', '#a42f3b',
-    '#f45b7a', '#c24998', '#81588d', '#bcb0c2', '#ffffff',
-]
-
-
+# this will create color plates
 class QPaletteButton(QtWidgets.QPushButton):
-
     def __init__(self, color):
         super(QPaletteButton, self).__init__()
+
         self.setFixedSize(QtCore.QSize(40, 40))
         self.color = color
         self.setStyleSheet("background-color: %s;" % color)
