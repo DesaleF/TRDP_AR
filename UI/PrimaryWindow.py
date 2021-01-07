@@ -307,9 +307,9 @@ class App(QMainWindow):
     def save(self):
         try:
             filePath = 'annotation.png'
-            self.draw_pixmap.save(filePath)
+            #self.draw_pixmap.save(filePath)
         except Exception as ex:
-            pass
+            show_error_dialog("Unable to save annotation")
 
 
 class QPaletteButton(QtWidgets.QPushButton):

@@ -1,7 +1,7 @@
 import sys
 from UI.PrimaryWindow import App
 from PyQt5.QtWidgets import QApplication
-
+from src.utils.utils import *
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -10,8 +10,7 @@ if __name__ == '__main__':
         ex = App()
         ex.show()
         sys.exit(app.exec_())
-    except Exception as ex:
-        print(ex)
-
-
-
+    except ModuleNotFoundError:
+        show_error_dialog("Module Not found" + ModuleNotFoundError.__name__)
+    finally:
+        show_error_dialog("Unkown error occured")
