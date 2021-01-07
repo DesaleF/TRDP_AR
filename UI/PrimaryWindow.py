@@ -139,15 +139,26 @@ class App(QMainWindow):
         """  This will start the camera feed """
         try:
             # if timer is stopped
+            src = [0, 2, 3]
+
             if not self.timer.isActive():
+
                 self.cap = cv2.VideoCapture(self.camera)
 
-                self.videoLabel.setText("Connecting to camera")
-                self.video_started = True
+                if not(self.cap is None or not self.cap.isOpened()):
+                    self.videoLabel.setText("Connecting to camera")
+                    self.video_started = True
 
-                # set timer timeout callback function
-                self.timer.timeout.connect(self.displayImage)
-                self.timer.start(100)
+                    # set timer timeout callback function
+                    self.timer.timeout.connect(self.displayImage)
+                    self.timer.start(100)
+                else:
+                    msg = QMessageBox()
+                    msg.setText('No webcam or attached camera detected , please plugin or close your webcam if it is open')
+
+                    msg.setIcon(QMessageBox.Critical)
+                    msg.setWindowTitle('Error')
+                    msg.exec_()
 
         except Exception as expt:
             print('error in function startVideo')
