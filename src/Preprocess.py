@@ -65,7 +65,7 @@ class PreProcessImages:
     # works: Yes
     # TODO:
     #   - obtain a consistent order of the points and unpack them individually
-    def HomographyTransform(self, image):
+    def HomographyTransform(self, image, x, y):
         """It will transform the detected corner displayable image
         :param
             - image: the full sized image

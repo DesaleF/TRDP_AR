@@ -179,9 +179,9 @@ class App(QMainWindow):
             raw_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
             # Predict using kalman filter
-            (x, y) = self.KF.predict()
+            (x, y) = KF.predict()
             if self.check_projector:
-                wrapped = self.preProcessingTool.HomographyTransform(raw_image)
+                wrapped = self.preProcessingTool.HomographyTransform(raw_image, x, y)
             else:
                 wrapped = raw_image
             # wrapped = raw_image
@@ -201,6 +201,9 @@ class App(QMainWindow):
             # create QImage and show it onto the label
             qImg = QImage(wrapped.data, width, height, step, QImage.Format_RGB888)
             self.videoLabel.setPixmap(QPixmap.fromImage(qImg))
+
+            # Update calman filter
+            #(x1, y1) = KF.update(qImg)
 
         except cv2.error as exc:
             show_error_dialog(exc)
